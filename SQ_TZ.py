@@ -6,6 +6,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Border, Side, Font
 from openpyxl.utils import get_column_letter, column_index_from_string
 from datetime import datetime
+from Reset_width import Reset
 from pprint import pprint
 import os, re
 
@@ -15,28 +16,7 @@ class JCTZ:
     def __init__(self):
         self.header = []
         self.value_lis = []
-        self.hy_code_dic = {
-            "农、林、牧、渔业": "A0000",
-            "采矿业": "B0000",
-            "制造业": "C0000",
-            "电力、热力、燃气及水生产和供应业": "D0000",
-            "建筑业": "E0000",
-            "批发和零售业": "F0000",
-            "交通运输、仓储和邮政业": "G0000",
-            "住宿和餐饮业": "H0000",
-            "信息传输、软件和信息技术服务业": "I0000",
-            "金融业": "J0000",
-            "房地产业": "K0000",
-            "租赁和商务服务业": "L0000",
-            "科学研究和技术服务业": "M0000",
-            "水利、环境和公共设施管理业": "N0000",
-            "居民服务、修理和其他服务业": "O0000",
-            "教育": "P0000",
-            "卫生和社会工作": "Q0000",
-            "文化、体育和娱乐业": "R0000",
-            "公共管理、社会保障和社会组织": "S0000",
-            "国际组织": "T0000"
-        }
+        self.sy_values = []
         self.border_style = Border(left=Side(style='thin'), 
                             right=Side(style='thin'), 
                             top=Side(style='thin'), 
@@ -45,8 +25,9 @@ class JCTZ:
         self.font = Font(name='宋体', size=10)
         self.path = os.path.join(os.path.dirname(__file__), 'template_excel')
         self.out_path = os.path.join(os.path.dirname(__file__), 'template_excel_bak')
-        self.file_tag = ''
+        # self.file_tag = ''
         self.jntc = ''
+        self.Rest = Reset()
 
     def insert_row(self, ws, data, row_index):
         ws.insert_rows(row_index)
@@ -88,6 +69,7 @@ class JCTZ:
                         if coord in [i[:2] for i in mer_row]:
                             continue
                         header.append(ws[coord].value.replace('\n', '').replace(' ', '').replace('（必填）', ''))
+
                 else:
                     value = ws[i.split(':')[0]].value
                     if value:
@@ -100,8 +82,54 @@ class JCTZ:
         else:
             # 单行表头直接取
             header = [i.value.replace('\n', '').replace(' ', '').replace('（必填）', '') for i in ws[max_num] if i.value]
-        print(header)
+        # print(header)
         return header
+    
+    def syry(self, ws_sy):
+        header_sy = self.get_headers(ws_sy, 2, 2)
+        syry_values = []
+        for row in [i for i in ws_sy.iter_rows()][2:]:
+            if not row[0].value:
+                break
+            lis_sy = []
+            for i in row:
+                lis_sy.append(i.value)
+            syry_values.append(dict(zip(header_sy, lis_sy)))
+        keys = ['序号', '姓名', '性别', '年龄', '文化程度', '身份证号', '户籍性质', '技能特长', '就业创业证号', '是否登记失业人员', '失业人员类型', '失业时间', '领取失业保险金起止时间', '求职意向', '培训意向', '就业服务需求', '联系电话', '类型', '等级']
+        for i in syry_values:
+            values = []
+            for key in keys:
+                v = i.get(key)
+                if key == '序号':
+                    v = i.get('总序号')
+                if key == '年龄':
+                    v = datetime.now().year - int(i.get('身份证号')[6:10])
+                if key == '文化程度':
+                    v = i.get('学历')
+                if key == '户籍性质':
+                    v = '城镇'
+                if key == '技能特长':
+                    v = i.get('特殊技能')
+                if key == '是否登记失业人员':
+                    v = '是'
+                if key == '失业人员类型':
+                    v = '(9)'
+                if key == '领取失业保险金起止时间':
+                    v = '无'
+                if key == '求职意向':
+                    v = '职工'
+                if key == '培训意向':
+                    v = '无'
+                if key == '就业服务需求':
+                    v = '（1）'
+                if key == '联系电话':
+                    v = i.get('电话')
+                if key == '类型':
+                    v = '中短期'
+                if key == '等级':
+                    v = '缺乏技能' if i.get('特殊技能') == '无' else '具备技能'
+                values.append(v)
+            self.sy_values.append(values)
 
     def read_file(self, file, min_num, max_num):
         # 从excel文件读取内容，将表头和内容组成字典保存在self.value_lis列表中
@@ -110,6 +138,8 @@ class JCTZ:
         # print(f'path:{path}')
         self.value_lis = []
         wb = load_workbook(path, data_only=True)
+        if "实名制" in path.split('/')[-1] and '失业人员情况' in wb.sheetnames:
+            self.syry(wb['失业人员情况'])
         ws = wb.active
         header = self.get_headers(ws, min_num, max_num)
         for row in [i for i in ws.iter_rows()][max_num:]:
@@ -119,7 +149,7 @@ class JCTZ:
             for i in row:
                 lis.append(i.value)
             self.value_lis.append(dict(zip(header, lis)))
-        self.file_tag = file
+        # self.file_tag = file
         # pprint(self.value_lis)
 
     def write_excel(self, file, min_num, max_num):
@@ -134,7 +164,7 @@ class JCTZ:
         value_lis = []
         values_lis = self.value_lis
         if "3就业困难人员管理台账" in file:
-            values_lis = [i for i in self.value_lis if i.get('就业困难再就业') == '是']
+            values_lis = [i for i in self.value_lis if i.get('就业困难人员') == '是']
         for n, i in enumerate(values_lis, start=1):
             # 根据key刚从关联表获得数据
             lis = []
@@ -186,9 +216,9 @@ class JCTZ:
                     if k == '单位就业':
                         v = '是' if i.get('就业方式') == '单位就业' else '否'
                     if k == '个体工商户':
-                        v = '否'
+                        v = '是' if i.get('就业方式') == '个体工商户' else '否'
                     if k == '公益性岗位':
-                        v = '否'
+                        v = '是' if i.get('就业方式') == '公益性岗位安置' else '否'
                     if k == '灵活就业':
                         v = '是' if i.get('就业方式') == '灵活就业' else '否'
                     if k == '失业人员再就业':
@@ -218,16 +248,21 @@ class JCTZ:
                     if k == '再就业时间' and not v:
                         v = i.get('登记就业时间（年/月/日）')
                     if k == '就业渠道':
-                        if i.get('就业方式') == '单位就业':
-                            v = '(3)'
-                        elif i.get('就业方式') == '灵活就业':
-                            v = '(5)'
+                        jyqd = {"灵活就业": "(5)", "单位就业": "(3)", "个体工商户": "(4)", "公益性岗位": "(6)"}
+                        v = jyqd.get(i.get('就业方式'))
                     if k == '现就业单位':
-                        v = i.get('就业单位(灵活就业填具体工作内容）')
+                        v = i.get("就业单位(灵活就业填具体工作内容）", "").split("/")[0]
+                    if k == '就业岗位':
+                        if i.get('就业方式') == '灵活就业':
+                            v = i.get('就业单位(灵活就业填具体工作内容）', '').split('/')[-1]
+                        else:
+                            v = '员工'
                     if k == '所属产业':
                         v = i.get('从事产业类型')
                 # 台账4
                 elif '4失业人员管理台账' in file:
+                    if k == '序号':
+                        v += len(self.sy_values)
                     if k == '是否登记失业人员':
                         v = '否'
                     if k == '技能特长':
@@ -249,7 +284,10 @@ class JCTZ:
                     if k == '领取失业保险金起止时间':
                         v = '无'
                     if k == '求职意向':
-                        v = i.get('就业岗位')
+                        if i.get('就业方式') == '灵活就业':
+                            v = i.get('就业单位(灵活就业填具体工作内容）', '').split('/')[-1]
+                        else:
+                            v = '职工'
                     if k == '培训意向':
                         v = '无'
                     if k == '就业服务需求':
@@ -269,18 +307,19 @@ class JCTZ:
                     if k == "就业困难人员类型":
                         v = '①'
                     if k == "家庭住址":
-                        v = '小半道'
+                        v = '鸡西市滴道区'
                     if k == "再就业时间":
                         v = i.get('登记就业时间（年/月/日）')
+                    if k == '现就业单位':
+                        v = i.get("就业单位(灵活就业填具体工作内容）", "").split("/")[0]
+                    if k == '就业岗位':
+                        if i.get('就业方式') == '灵活就业':
+                            v = i.get('就业单位(灵活就业填具体工作内容）', '').split('/')[-1]
+                        else:
+                            v = '员工'
                     if k == '就业去向':
-                        if i.get('灵活就业') == '是':
-                            v = '⑤'
-                        elif i.get('单位就业') == '是':
-                            v = '③'
-                        elif i.get('个体工商户') == '是':
-                            v = '④'
-                        elif i.get('公益性岗位') == '是':
-                            v = '①'
+                        jyqx = {"灵活就业": "⑤", "单位就业": "③", "个体工商户": "④", "公益性岗位": "⑥"}
+                        v = jyqx.get(i.get('就业方式'))
                     if k == '是否签定劳动合同':
                         v = '否'
                     if k == '合同期限':
@@ -289,44 +328,10 @@ class JCTZ:
                         v = ' 是'
                     if k == '就业援助形式':
                         v = '⑤'
-                elif "全省导入模板" in file:
-                    if k == '市':
-                        v = '鸡西市就业服务中心'
-                    if k == '机构名称（县（区））':
-                        v = '滴道区人力资源和社会保障服务中心,23030432'
-                    if k == '就业方式':
-                        if i.get('单位就业') == '是':
-                            v = '单位就业'
-                        elif i.get('个体工商户') == '是':
-                            v = '个体工商户'
-                        elif i.get('灵活就业') == '是':
-                            v = '灵活就业'
-                        elif i.get('公益性岗位') == '是':
-                            v = '公益性岗位安置'
-                    if k == '就业类型':
-                        if i.get('失业人员再就业') == '是':
-                            v = '失业再就业'
-                        else:
-                            v = '初次就业'
-                    if k == '所属行业(就业形式为单位就业时必填)':
-                        v = i.get('行业划分')
-                    if k == '从事产业类型':
-                        v = i.get('产业划分')
-                    if k == '登记失业人员':
-                        if i.get('失业人员再就业') == '是':
-                            v = '是'
-                        else:
-                            v = '否'
-                    if k == '就业困难人员':
-                        v = i.get('就业困难再就业')
-                    if k == '是否录入金保（是/否）':
-                        v = '是'
-                    if k == '是否是残疾人（是/否）':
-                        v = '否'
-                    if k == '是否是退役军人（是/否）':
-                        v = '否'
                 lis.append(v)
             value_lis.append(lis)
+        if "4失业人员管理台账" in file:
+            value_lis = self.sy_values + value_lis
         # pprint(value_lis)
         # 计算插入行号
         insert_num = num + max_num
@@ -337,6 +342,8 @@ class JCTZ:
         if mer_lis:
             self.write_tail(ws, mer_lis, len(value_lis))
         out_path = os.path.join(self.out_path, file)
+        reset_rows = [4] if "12求职人员登记台帐" in file else [4, 5]
+        self.Rest.reset(ws, rows=reset_rows)
         wb.save(out_path)
         print(f'文件{out_path}，写入完成')
 
@@ -379,17 +386,6 @@ class JCTZ:
         if out_path:
             self.out_path = out_path
         self.write_excel('15退休人员基本情况及相关信息台帐.xlsx', 4, 5)
-    
-    def run_gb(self, smz_path, out_path):
-        # 根据实名制信息，导出台账国标实名制
-        self.read_file(smz_path, 2, 3)
-        if out_path:
-            self.out_path = out_path
-        self.write_excel('小半道社区全省导入模板.xlsx', 2, 3)
-
-    def to_smz(self):
-        # 根据找人信息生成实名制
-        pass
 
     def main(self):
         # 根据实名制信息，导出台账3、4、5、6
@@ -406,4 +402,4 @@ if __name__ == '__main__':
     jctz = JCTZ()
     # jctz.run_smz(smz_path='C:/Users/Administrator/Desktop/立井2024年4月实名制台账20240426版.xlsx', out_path='')
     # jctz.run_smz(smz_path='C:/Users/XBD/Desktop/实名制.xlsx', out_path='C:/Users/XBD/Desktop/台账结果')
-    jctz.run_4to12(tz4_path='C:/Users/XBD/Desktop/台账结果/4失业人员管理台账.xlsx', out_path='C:/Users/XBD/Desktop/台账结果')
+    # jctz.run_4to12(tz4_path='C:/Users/XBD/Desktop/台账结果/4失业人员管理台账.xlsx', out_path='C:/Users/XBD/Desktop/台账结果')

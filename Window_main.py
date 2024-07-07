@@ -85,6 +85,7 @@ class Query_Window(QMainWindow):
         tab1.layout.addWidget(self.btn_open_dir, 4, 8, 1, 1)
 
         self.btn_open_dir = QPushButton('国标实名制')
+        self.btn_open_dir.setEnabled(False)
         self.btn_open_dir.clicked.connect(self.work_to_gb)
         tab1.layout.addWidget(self.btn_open_dir, 5, 8, 1, 1)
 
