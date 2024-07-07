@@ -18,7 +18,7 @@ class Reset:
         self.font = Font(name='宋体', size=10)
         # excel格式设置
 
-    def reset(self, ws, rows=None):
+    def reset(self, ws, rows=None, value=False):
         mer_lis = [mer_cell.coord.split(':')[0] for mer_cell in ws.merged_cells.ranges]
         # 修改单元格样式
         for row in ws:
@@ -30,7 +30,12 @@ class Reset:
                     continue
                 if rows and cell.row in rows:
                     continue
-                if cell.value:
+                if value:
+                    if cell.value:
+                        cell.border = self.border_style
+                        cell.alignment = self.alignment_style
+                        cell.font = self.font
+                else:
                     cell.border = self.border_style
                     cell.alignment = self.alignment_style
                     cell.font = self.font

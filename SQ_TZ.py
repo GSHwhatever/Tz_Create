@@ -343,7 +343,7 @@ class JCTZ:
             self.write_tail(ws, mer_lis, len(value_lis))
         out_path = os.path.join(self.out_path, file)
         reset_rows = [4] if "12求职人员登记台帐" in file else [4, 5]
-        self.Rest.reset(ws, rows=reset_rows)
+        self.Rest.reset(ws, rows=reset_rows, value=True)
         wb.save(out_path)
         print(f'文件{out_path}，写入完成')
 
