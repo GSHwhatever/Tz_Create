@@ -135,7 +135,8 @@ class Query_Window(QMainWindow):
                 print('在此之前，请先选择文件')
             else:
                 self.jctz.run_smz(text, self.download_path)
-                self.jctz.run_4to12(self.download_path, self.download_path)
+                if self.jctz.run_smz_status:
+                    self.jctz.run_4to12(self.download_path, self.download_path)
         except Exception as e:
             traceback.print_exc()
             print(e)

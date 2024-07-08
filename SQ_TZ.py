@@ -5,6 +5,7 @@
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Border, Side, Font
 from openpyxl.utils import get_column_letter, column_index_from_string
+from openpyxl.utils.exceptions import InvalidFileException
 from datetime import datetime
 from Reset_width import Reset
 from pprint import pprint
@@ -27,6 +28,7 @@ class JCTZ:
         self.out_path = os.path.join(os.path.dirname(__file__), 'template_excel_bak')
         # self.file_tag = ''
         self.jntc = ''
+        self.run_smz_status = False
         self.Rest = Reset()
 
     def insert_row(self, ws, data, row_index):
@@ -117,7 +119,7 @@ class JCTZ:
                 if key == '领取失业保险金起止时间':
                     v = '无'
                 if key == '求职意向':
-                    v = '职工'
+                    v = '服务'
                 if key == '培训意向':
                     v = '无'
                 if key == '就业服务需求':
@@ -128,6 +130,13 @@ class JCTZ:
                     v = '中短期'
                 if key == '等级':
                     v = '缺乏技能' if i.get('特殊技能') == '无' else '具备技能'
+                if key == '失业时间':
+                    v_time = i.get('失业时间')
+                    if v_time:
+                        month = datetime.now().month - v.month
+                        v = v_time.replace(month=datetime.now().month - 2) if month > 2 else v_time
+                    else:
+                        v = datetime.now().replace(month=datetime.now().month - 2, day=1, hour=0, minute=0, second=0, microsecond=0)
                 values.append(v)
             self.sy_values.append(values)
 
@@ -137,20 +146,29 @@ class JCTZ:
         path = file
         # print(f'path:{path}')
         self.value_lis = []
-        wb = load_workbook(path, data_only=True)
-        if "实名制" in path.split('/')[-1] and '失业人员情况' in wb.sheetnames:
-            self.syry(wb['失业人员情况'])
-        ws = wb.active
-        header = self.get_headers(ws, min_num, max_num)
-        for row in [i for i in ws.iter_rows()][max_num:]:
-            if not row[0].value:
-                break
-            lis = []
-            for i in row:
-                lis.append(i.value)
-            self.value_lis.append(dict(zip(header, lis)))
-        # self.file_tag = file
-        # pprint(self.value_lis)
+        try:
+            wb = load_workbook(path, data_only=True)
+        except InvalidFileException as E:
+            print(f'不能处理{path.split(".")[-1]}类型的Excel文件,推荐另存为xlsx类型')
+            return 'error'
+        else:
+            if "实名制" in path.split('/')[-1] and '失业人员情况' in wb.sheetnames:
+                self.syry(wb['失业人员情况'])
+            try:
+                ws = wb['新就业人员']
+            except KeyError:
+                ws = wb.worksheets[0]
+            finally:
+                header = self.get_headers(ws, min_num, max_num)
+                for row in [i for i in ws.iter_rows()][max_num:]:
+                    if not row[0].value:
+                        break
+                    lis = []
+                    for i in row:
+                        lis.append(i.value)
+                    self.value_lis.append(dict(zip(header, lis)))
+                # self.file_tag = file
+                # pprint(self.value_lis)
 
     def write_excel(self, file, min_num, max_num):
         # 将self.value_lis列表中的内容根据相同表头写入到excel，其中的有些列特殊处理
@@ -240,11 +258,7 @@ class JCTZ:
                         if not d:
                             d = i.get('就业时间')
                         if d:
-                            s = d.strftime('%Y/%m/%d')
-                            l = s.split('/')
-                            l[1] = str(d.month - 1)
-                            l2 = '/'.join(l)
-                            v = datetime.strptime(l2, "%Y/%m/%d")
+                            v = d.replace(month=d.month-1)
                     if k == '再就业时间' and not v:
                         v = i.get('登记就业时间（年/月/日）')
                     if k == '就业渠道':
@@ -263,6 +277,8 @@ class JCTZ:
                 elif '4失业人员管理台账' in file:
                     if k == '序号':
                         v += len(self.sy_values)
+                    if k == '年龄':
+                        v = i.get('年龄').split('-')[0]
                     if k == '是否登记失业人员':
                         v = '否'
                     if k == '技能特长':
@@ -270,11 +286,7 @@ class JCTZ:
                     if k == '失业时间':
                         d = i.get('登记就业时间（年/月/日）')
                         if d:
-                            s = d.strftime('%Y/%m/%d')
-                            l = s.split('/')
-                            l[1] = str(d.month - 1)
-                            l2 = '/'.join(l)
-                            v = datetime.strptime(l2, "%Y/%m/%d")
+                            v = d.replace(month=d.month-1)
                     if k == '文化程度' and not v:
                         v = i.get('学历')
                     if k == '失业人员类型':
@@ -287,7 +299,7 @@ class JCTZ:
                         if i.get('就业方式') == '灵活就业':
                             v = i.get('就业单位(灵活就业填具体工作内容）', '').split('/')[-1]
                         else:
-                            v = '职工'
+                            v = '员工'
                     if k == '培训意向':
                         v = '无'
                     if k == '就业服务需求':
@@ -362,27 +374,34 @@ class JCTZ:
 
     def run_smz(self, smz_path, out_path):
         # 根据实名制信息，导出台账5、6
-        self.read_file(smz_path, 2, 3)
+        res = self.read_file(smz_path, 2, 3)
+        if res and res == 'error':
+            return
         if out_path:
             self.out_path = out_path
         self.write_excel('3就业困难人员管理台账.xlsx', 4, 5)
         self.write_excel('4失业人员管理台账.xlsx', 4, 5)
         self.write_excel('5失业人员再就业信息明细台账.xlsx', 4, 5)
         self.write_excel('6新就业人员信息台账.xlsx', 4, 5)
+        self.run_smz_status = True
 
     def run_4to12(self, tz4_path, out_path):
         # 根据台账4，导出台账12
         if os.path.isfile(tz4_path):
-            self.read_file(tz4_path, 4, 5)
+            res = self.read_file(tz4_path, 4, 5)
         else:
-            self.read_file(os.path.join(tz4_path, '4失业人员管理台账.xlsx'), 4, 5)
+            res = self.read_file(os.path.join(tz4_path, '4失业人员管理台账.xlsx'), 4, 5)
+        if res and res == 'error':
+            return
         if out_path:
             self.out_path = out_path
         self.write_excel('12求职人员登记台帐.xlsx', 4, 4)
     
     def run_7to15(self, tz7_path, out_path):
         # 将台账7导入台账15
-        self.read_file(tz7_path, 4, 4)
+        res = self.read_file(tz7_path, 4, 4)
+        if res and res == 'error':
+            return
         if out_path:
             self.out_path = out_path
         self.write_excel('15退休人员基本情况及相关信息台帐.xlsx', 4, 5)
@@ -391,8 +410,9 @@ class JCTZ:
         # 根据实名制信息，导出台账3、4、5、6
         self.run_smz()
 
-        # 根据台账4，导出台账12
-        self.run_4to12()
+        if self.run_smz_status:
+            # 根据台账4，导出台账12
+            self.run_4to12()
 
         # 将台账7导入台账15
         # self.run_7to15()
