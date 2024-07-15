@@ -15,7 +15,7 @@ class Query_Window(QMainWindow):
         self.label = None
         self.line_edit = None
         self.btn_push = None
-        self.text_edit = None
+        self.text_edit = QTextEdit()
         self.radiobutton1 = None
         self.radiobutton2 = None
         self.radiobutton3 = None
@@ -64,7 +64,6 @@ class Query_Window(QMainWindow):
         tab1.layout.addWidget(self.btn_login, 0, 3, 1, 1)
 
         # Êä³öÃæ°å
-        self.text_edit = QTextEdit()
         self.text_edit.setReadOnly(True)
         tab1.layout.addWidget(self.text_edit, 1, 0, 8, 7)
 
