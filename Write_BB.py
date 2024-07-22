@@ -3,16 +3,18 @@ from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter, column_index_from_string
 from collections import Counter
 from datetime import datetime
-import re
+import os
 
 
 class Write:
 
     def __init__(self) -> None:
-        self.smz_path = r'F:/Projects/SQ/Others/小半道社区7月新就业人员实名制.xlsx'
+        self.smz_path = r'F:/GSH/Other/小半道社区7月新就业人员实名制.xlsx'
         self.smz_wb = load_workbook(self.smz_path)
-        self.bb_path = ''
-        # self.bb_wb = load_workbook(self.bb_path)
+        self.bb_path = os.path.join(os.path.dirname(__file__), 'template_excel', '就业统计报表.xlsx')
+        self.out_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', '就业统计报表.xlsx')
+        self.bb_wb = load_workbook(self.bb_path)
+        self.row = datetime.now().month + 5
         self.industries = [
             "农、林、牧、渔业",
             "采矿业",
@@ -56,6 +58,8 @@ class Write:
         nv_num = len([i for i in all_ws['X'] if i.value and i.value == '女'])       # 女性人数
         cylb_dic = Counter([i.value for i in all_ws['P'] if i.value and i.value in ('第一产业', '第二产业', '第三产业')])     # 产业类别计数
         jyqd_dic = Counter([i.value for i in all_ws['J'] if i.value and i.value in ('单位就业', '灵活就业', '个体工商户', '公益性岗位安置')])     # 就业渠道计数
+        xydm_lis = [i.value for i in all_ws['L'] if i.value and i.value.isalnum()]      # 单位就业人员单位统一就业代码
+        sydw_num = len([i for i in xydm_lis if i[0] == '1'])      # 根据统一信用代码筛选第一位为'1'的为机关事业单位
         nlhf_dic = Counter([i.value for i in all_ws['AF'] if i.value and i.value in ('16-24', '25-45', '46-60')])     # 年龄划分计数
 
         syry_num = len([i for i in syry_ws['A'] if i.value]) - 2        # 失业人员人数
@@ -66,19 +70,28 @@ class Write:
         
         self.EP1.extend([xzjy_num, xzjy_num + zrjy_num, zrjy_num, syzjy_num, jykn_num])
         self.sjy01.extend([xzjy_num + zrjy_num, syzjy_num, jykn_num, xl_num, nv_num, cylb_dic.get('第一产业', 0), cylb_dic.get('第二产业', 0), cylb_dic.get('第三产业', 0),
-                           0, 0, jyqd_dic.get('单位就业', 0), 0, jyqd_dic.get('个体工商户', 0), jyqd_dic.get('灵活就业', 0), jyqd_dic.get('公益性岗位安置', 0), nlhf_dic.get('16-24', 0),
+                           0, 0, jyqd_dic.get('单位就业', 0) - sydw_num, sydw_num, jyqd_dic.get('个体工商户', 0), jyqd_dic.get('灵活就业', 0), jyqd_dic.get('公益性岗位安置', 0), nlhf_dic.get('16-24', 0),
                            nlhf_dic.get('25-45', 0), nlhf_dic.get('46-60', 0)])
         self.sy02.extend([syry_num, 0, 0, 0, 0, 0, syry_num, 0, 0, 0, 0, 0, synx_num, sykn_num])
-        # self.hyhf.extend()
+        self.hyhf.extend([xzjy_num + zrjy_num])
+        self.hyhf.extend([hyhf_dic.get(i, 0) for i in self.industries])
         print(self.EP1)
         print(self.sjy01)
         print(self.sy02)
-        print(hyhf_dic)
+        print(self.hyhf)
+    
+    def write(self):
+        for sheet, datas in [('人社统EP1', self.EP1), ('省就业01', self.sjy01), ('02城镇表登记失业人员情况', self.sy02), ('行业划分', self.hyhf)]:
+            ws = self.bb_wb[sheet]
+            for i, v in enumerate(datas, start=3):
+                ws.cell(row=self.row, column=i, value=v)
+        self.bb_wb.save(self.out_path)
         
 
 if __name__ == '__main__':
     W = Write()
     W.read()
+    W.write()
 
 
         
