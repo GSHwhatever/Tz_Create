@@ -9,33 +9,32 @@ import os
 class Write:
 
     def __init__(self) -> None:
-        self.smz_path = r'F:/GSH/Other/Ğ¡°ëµÀÉçÇø7ÔÂĞÂ¾ÍÒµÈËÔ±ÊµÃûÖÆ.xlsx'
-        self.smz_wb = load_workbook(self.smz_path)
-        self.bb_path = os.path.join(os.path.dirname(__file__), 'template_excel', '¾ÍÒµÍ³¼Æ±¨±í.xlsx')
-        self.out_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', '¾ÍÒµÍ³¼Æ±¨±í.xlsx')
-        self.bb_wb = load_workbook(self.bb_path)
+        self.smz_path = r'D:/weixin/Other/å°åŠé“ç¤¾åŒº7æœˆæ–°å°±ä¸šäººå‘˜å®ååˆ¶.xlsx'
+        out_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'å°è´¦ç»“æœ', 'å°±ä¸šç»Ÿè®¡æŠ¥è¡¨.xlsx')
+        self.bb_path = out_path if os.path.exists(out_path) else os.path.join(os.path.dirname(__file__), 'template_excel', 'å°±ä¸šç»Ÿè®¡æŠ¥è¡¨.xlsx')
+        self.out_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'å°±ä¸šç»Ÿè®¡æŠ¥è¡¨.xlsx')
         self.row = datetime.now().month + 5
         self.industries = [
-            "Å©¡¢ÁÖ¡¢ÄÁ¡¢ÓæÒµ",
-            "²É¿óÒµ",
-            "ÖÆÔìÒµ",
-            "µçÁ¦¡¢È¼Æø¼°Ë®µÄÉú²úºÍ¹©Ó¦Òµ",
-            "½¨ÖşÒµ",
-            "½»Í¨ÔËÊä¡¢²Ö´¢ºÍÓÊÕşÒµ",
-            "ĞÅÏ¢´«Êä¡¢¼ÆËã»ú·şÎñºÍÈí¼şÒµ",
-            "Åú·¢ºÍÁãÊÛÒµ",
-            "×¡ËŞºÍ²ÍÒûÒµ",
-            "½ğÈÚÒµ",
-            "·¿µØ²úÒµ",
-            "×âÁŞºÍÉÌÎñ·şÎñÒµ",
-            "¿ÆÑ§ÑĞ¾¿¡¢¼¼Êõ·şÎñºÍµØÖÊ¿±²éÒµ",
-            "Ë®Àû¡¢»·¾³ºÍ¹«¹²ÉèÊ©¹ÜÀíÒµ",
-            "¾ÓÃñ·şÎñºÍÆäËû·şÎñÒµ",
-            "½ÌÓı",
-            "ÎÀÉú¡¢Éç»á±£ÕÏºÍÉç»á¸£ÀûÒµ",
-            "ÎÄ»¯¡¢ÌåÓıºÍÓéÀÖÒµ",
-            "±ùÑ©ÂÃÓÎÒµ",
-            "¹«¹²¹ÜÀíºÍÉç»á×éÖ¯"
+            "å†œã€æ—ã€ç‰§ã€æ¸”ä¸š",
+            "é‡‡çŸ¿ä¸š",
+            "åˆ¶é€ ä¸š",
+            "ç”µåŠ›ã€ç‡ƒæ°”åŠæ°´çš„ç”Ÿäº§å’Œä¾›åº”ä¸š",
+            "å»ºç­‘ä¸š",
+            "äº¤é€šè¿è¾“ã€ä»“å‚¨å’Œé‚®æ”¿ä¸š",
+            "ä¿¡æ¯ä¼ è¾“ã€è®¡ç®—æœºæœåŠ¡å’Œè½¯ä»¶ä¸š",
+            "æ‰¹å‘å’Œé›¶å”®ä¸š",
+            "ä½å®¿å’Œé¤é¥®ä¸š",
+            "é‡‘èä¸š",
+            "æˆ¿åœ°äº§ä¸š",
+            "ç§Ÿèµå’Œå•†åŠ¡æœåŠ¡ä¸š",
+            "ç§‘å­¦ç ”ç©¶ã€æŠ€æœ¯æœåŠ¡å’Œåœ°è´¨å‹˜æŸ¥ä¸š",
+            "æ°´åˆ©ã€ç¯å¢ƒå’Œå…¬å…±è®¾æ–½ç®¡ç†ä¸š",
+            "å±…æ°‘æœåŠ¡å’Œå…¶ä»–æœåŠ¡ä¸š",
+            "æ•™è‚²",
+            "å«ç”Ÿã€ç¤¾ä¼šä¿éšœå’Œç¤¾ä¼šç¦åˆ©ä¸š",
+            "æ–‡åŒ–ã€ä½“è‚²å’Œå¨±ä¹ä¸š",
+            "å†°é›ªæ—…æ¸¸ä¸š",
+            "å…¬å…±ç®¡ç†å’Œç¤¾ä¼šç»„ç»‡"
         ]
         self.EP1 = []
         self.sjy01= []
@@ -43,49 +42,58 @@ class Write:
         self.hyhf = []
     
     def read(self):
-        all_ws = self.smz_wb['ĞÂ¾ÍÒµÈËÔ±']
-        xzjy_ws = self.smz_wb['ĞÂÔö¾ÍÒµÈËÔ±']
-        zrjy_ws = self.smz_wb['×ÔÈ»¼õÔ±£¨¾ÍÒµ£©']
-        syry_ws = self.smz_wb['Ê§ÒµÈËÔ±Çé¿ö']
+        smz_wb = load_workbook(self.smz_path)
+        all_ws = smz_wb['æ–°å°±ä¸šäººå‘˜']
+        xzjy_ws = smz_wb['æ–°å¢å°±ä¸šäººå‘˜']
+        zrjy_ws = smz_wb['è‡ªç„¶å‡å‘˜ï¼ˆå°±ä¸šï¼‰']
+        syry_ws = smz_wb['å¤±ä¸šäººå‘˜æƒ…å†µ']
 
-        xzjy_num = len([i for i in xzjy_ws['A'] if i.value]) - 2        # ĞÂÔö¾ÍÒµÈËÊı
-        zrjy_num = len([i for i in zrjy_ws['A'] if i.value]) - 2        # ×ÔÈ»¼õÔ±ÈËÊı
+        xzjy_num = len([i for i in xzjy_ws['A'] if i.value]) - 2        # æ–°å¢å°±ä¸šäººæ•°
+        zrjy_num = len([i for i in zrjy_ws['A'] if i.value]) - 2        # è‡ªç„¶å‡å‘˜äººæ•°
         
-        syzjy_num = len([i for i in all_ws['K'] if i.value and i.value == 'Ê§ÒµÔÙ¾ÍÒµ'])        # Ê§ÒµÔÙ¾ÍÒµÈËÊı
-        jykn_num = len([i for i in all_ws['R'] if i.value and i.value == 'ÊÇ'])     # ¾ÍÒµÀ§ÄÑÈËÊı
+        syzjy_num = len([i for i in all_ws['K'] if i.value and i.value == 'å¤±ä¸šå†å°±ä¸š'])        # å¤±ä¸šå†å°±ä¸šäººæ•°
+        jykn_num = len([i for i in all_ws['R'] if i.value and i.value == 'æ˜¯'])     # å°±ä¸šå›°éš¾äººæ•°
 
-        xl_num = len([i for i in all_ws['G'] if i.value and i.value in ('´óÑ§×¨¿Æ', '´óÑ§±¾¿Æ', 'Ë¶Ê¿ÑĞ¾¿Éú')])     # ´ó×¨ÒÔÉÏÑ§ÀúÈËÊı
-        nv_num = len([i for i in all_ws['X'] if i.value and i.value == 'Å®'])       # Å®ĞÔÈËÊı
-        cylb_dic = Counter([i.value for i in all_ws['P'] if i.value and i.value in ('µÚÒ»²úÒµ', 'µÚ¶ş²úÒµ', 'µÚÈı²úÒµ')])     # ²úÒµÀà±ğ¼ÆÊı
-        jyqd_dic = Counter([i.value for i in all_ws['J'] if i.value and i.value in ('µ¥Î»¾ÍÒµ', 'Áé»î¾ÍÒµ', '¸öÌå¹¤ÉÌ»§', '¹«ÒæĞÔ¸ÚÎ»°²ÖÃ')])     # ¾ÍÒµÇşµÀ¼ÆÊı
-        xydm_lis = [i.value for i in all_ws['L'] if i.value and i.value.isalnum()]      # µ¥Î»¾ÍÒµÈËÔ±µ¥Î»Í³Ò»¾ÍÒµ´úÂë
-        sydw_num = len([i for i in xydm_lis if i[0] == '1'])      # ¸ù¾İÍ³Ò»ĞÅÓÃ´úÂëÉ¸Ñ¡µÚÒ»Î»Îª'1'µÄÎª»ú¹ØÊÂÒµµ¥Î»
-        nlhf_dic = Counter([i.value for i in all_ws['AF'] if i.value and i.value in ('16-24', '25-45', '46-60')])     # ÄêÁä»®·Ö¼ÆÊı
+        xl_num = len([i for i in all_ws['G'] if i.value and i.value in ('å¤§å­¦ä¸“ç§‘', 'å¤§å­¦æœ¬ç§‘', 'ç¡•å£«ç ”ç©¶ç”Ÿ')])     # å¤§ä¸“ä»¥ä¸Šå­¦å†äººæ•°
+        nv_num = len([i for i in all_ws['X'] if i.value and i.value == 'å¥³'])       # å¥³æ€§äººæ•°
+        cylb_dic = Counter([i.value for i in all_ws['P'] if i.value and i.value in ('ç¬¬ä¸€äº§ä¸š', 'ç¬¬äºŒäº§ä¸š', 'ç¬¬ä¸‰äº§ä¸š')])     # äº§ä¸šç±»åˆ«è®¡æ•°
+        jyqd_dic = Counter([i.value for i in all_ws['J'] if i.value and i.value in ('å•ä½å°±ä¸š', 'çµæ´»å°±ä¸š', 'ä¸ªä½“å·¥å•†æˆ·', 'å…¬ç›Šæ€§å²—ä½å®‰ç½®')])     # å°±ä¸šæ¸ é“è®¡æ•°
+        xydm_lis = [i.value for i in all_ws['L'] if i.value and i.value.isalnum()]      # å•ä½å°±ä¸šäººå‘˜å•ä½ç»Ÿä¸€å°±ä¸šä»£ç 
+        sydw_num = len([i for i in xydm_lis if i[0] == '1'])      # æ ¹æ®ç»Ÿä¸€ä¿¡ç”¨ä»£ç ç­›é€‰ç¬¬ä¸€ä½ä¸º'1'çš„ä¸ºæœºå…³äº‹ä¸šå•ä½
+        nlhf_dic = Counter([i.value for i in all_ws['AF'] if i.value and i.value in ('16-24', '25-45', '46-60')])     # å¹´é¾„åˆ’åˆ†è®¡æ•°
 
-        syry_num = len([i for i in syry_ws['A'] if i.value]) - 2        # Ê§ÒµÈËÔ±ÈËÊı
-        synx_num = len([i for i in syry_ws['C'] if i.value and i.value == 'Å®'])        # Ê§ÒµÈËÔ±ÆäÖĞÅ®ĞÔÈËÊı
-        sykn_num = len([i for i in syry_ws['M'] if i.value and i.value == 'ÊÇ'])        # Ê§ÒµÈËÔ±ÆäÖĞ¾ÍÒµÀ§ÄÑÈËÊı
+        syry_num = len([i for i in syry_ws['A'] if i.value]) - 2        # å¤±ä¸šäººå‘˜äººæ•°
+        synx_num = len([i for i in syry_ws['C'] if i.value and i.value == 'å¥³'])        # å¤±ä¸šäººå‘˜å…¶ä¸­å¥³æ€§äººæ•°
+        sykn_num = len([i for i in syry_ws['M'] if i.value and i.value == 'æ˜¯'])        # å¤±ä¸šäººå‘˜å…¶ä¸­å°±ä¸šå›°éš¾äººæ•°
 
         hyhf_dic = Counter([i.value for i in all_ws['N'] if i.value and i.value in self.industries])
         
         self.EP1.extend([xzjy_num, xzjy_num + zrjy_num, zrjy_num, syzjy_num, jykn_num])
-        self.sjy01.extend([xzjy_num + zrjy_num, syzjy_num, jykn_num, xl_num, nv_num, cylb_dic.get('µÚÒ»²úÒµ', 0), cylb_dic.get('µÚ¶ş²úÒµ', 0), cylb_dic.get('µÚÈı²úÒµ', 0),
-                           0, 0, jyqd_dic.get('µ¥Î»¾ÍÒµ', 0) - sydw_num, sydw_num, jyqd_dic.get('¸öÌå¹¤ÉÌ»§', 0), jyqd_dic.get('Áé»î¾ÍÒµ', 0), jyqd_dic.get('¹«ÒæĞÔ¸ÚÎ»°²ÖÃ', 0), nlhf_dic.get('16-24', 0),
+        self.sjy01.extend([xzjy_num + zrjy_num, syzjy_num, jykn_num, xl_num, nv_num, cylb_dic.get('ç¬¬ä¸€äº§ä¸š', 0), cylb_dic.get('ç¬¬äºŒäº§ä¸š', 0), cylb_dic.get('ç¬¬ä¸‰äº§ä¸š', 0),
+                           0, 0, jyqd_dic.get('å•ä½å°±ä¸š', 0) - sydw_num, sydw_num, jyqd_dic.get('ä¸ªä½“å·¥å•†æˆ·', 0), jyqd_dic.get('çµæ´»å°±ä¸š', 0), jyqd_dic.get('å…¬ç›Šæ€§å²—ä½å®‰ç½®', 0), nlhf_dic.get('16-24', 0),
                            nlhf_dic.get('25-45', 0), nlhf_dic.get('46-60', 0)])
         self.sy02.extend([syry_num, 0, 0, 0, 0, 0, syry_num, 0, 0, 0, 0, 0, synx_num, sykn_num])
         self.hyhf.extend([xzjy_num + zrjy_num])
         self.hyhf.extend([hyhf_dic.get(i, 0) for i in self.industries])
-        print(self.EP1)
-        print(self.sjy01)
-        print(self.sy02)
-        print(self.hyhf)
+        # print(self.EP1)
+        # print(self.sjy01)
+        # print(self.sy02)
+        # print(self.hyhf)
     
     def write(self):
-        for sheet, datas in [('ÈËÉçÍ³EP1', self.EP1), ('Ê¡¾ÍÒµ01', self.sjy01), ('02³ÇÕò±íµÇ¼ÇÊ§ÒµÈËÔ±Çé¿ö', self.sy02), ('ĞĞÒµ»®·Ö', self.hyhf)]:
-            ws = self.bb_wb[sheet]
+        bb_wb = load_workbook(self.bb_path)
+        for sheet, datas in [('äººç¤¾ç»ŸEP1', self.EP1), ('çœå°±ä¸š01', self.sjy01), ('02åŸé•‡è¡¨ç™»è®°å¤±ä¸šäººå‘˜æƒ…å†µ', self.sy02), ('è¡Œä¸šåˆ’åˆ†', self.hyhf)]:
+            ws = bb_wb[sheet]
             for i, v in enumerate(datas, start=3):
                 ws.cell(row=self.row, column=i, value=v)
-        self.bb_wb.save(self.out_path)
+        bb_wb.save(self.out_path)
+        print(f'æ–‡ä»¶{self.out_path}ï¼Œå†™å…¥å®Œæˆ')
+
+    def run(self, path, out_path):
+        self.smz_path = path
+        self.out_path = os.path.join(out_path, 'å°±ä¸šç»Ÿè®¡æŠ¥è¡¨.xlsx')
+        self.read()
+        self.write()
         
 
 if __name__ == '__main__':
