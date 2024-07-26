@@ -35,7 +35,6 @@ class Query_Window(QMainWindow):
         if not os.path.exists(self.download_path):
             os.mkdir(self.download_path)
         self.jctz = JCTZ()
-        self.write = Write()
         self.initUI()
 
     def initUI(self):
@@ -188,6 +187,7 @@ class Query_Window(QMainWindow):
                 print('在此之前，请先选择文件')
             else:
                 # print(f'text:{text},{len(text)}')
+                self.write = Write()
                 self.write.run(text, self.download_path)
         except Exception as e:
             traceback.print_exc()
