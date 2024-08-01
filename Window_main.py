@@ -31,88 +31,88 @@ class Query_Window(QMainWindow):
         self.t_layout = None
         self.search_info = None
         self.vertical_layout = None
-        self.download_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'å°è´¦ç»“æœ')
+        self.download_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'Ì¨ÕË½á¹û')
         if not os.path.exists(self.download_path):
             os.mkdir(self.download_path)
         self.jctz = JCTZ()
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('å°è´¦ç»¼åˆç”Ÿæˆå™¨')
-        # åˆ›å»ºä¸» QWidget
+        self.setWindowTitle('Ì¨ÕË×ÛºÏÉú³ÉÆ÷')
+        # ´´½¨Ö÷ QWidget
         main_widget = QWidget()
 
         self.tab_widget = QTabWidget()
-        layout = QVBoxLayout(main_widget)  # åˆ›å»ºå‚ç›´å¸ƒå±€ç®¡ç†å™¨
+        layout = QVBoxLayout(main_widget)  # ´´½¨´¹Ö±²¼¾Ö¹ÜÀíÆ÷
 
         tab1 = QWidget()
 
-        tab1.layout = QGridLayout()  # åˆ›å»ºæ …æ ¼å¸ƒå±€ç®¡ç†å™¨
+        tab1.layout = QGridLayout()  # ´´½¨Õ¤¸ñ²¼¾Ö¹ÜÀíÆ÷
 
-        self.label = QLabel('è¯·è¾“å…¥')
+        self.label = QLabel('ÇëÊäÈë')
         tab1.layout.addWidget(self.label, 0, 0, 1, 1)
         self.line_edit = QLineEdit()
         # self.line_edit.editingFinished.connect(self.input_check)
-        self.line_edit.setPlaceholderText('é€‰æ‹©å®ååˆ¶æ–‡ä»¶ã€å°å¸4æˆ–å°è´¦7')
+        self.line_edit.setPlaceholderText('Ñ¡ÔñÊµÃûÖÆÎÄ¼ş¡¢Ì¨ÕÊ4»òÌ¨ÕË7')
         # print(self.line_edit.width())
         # print(self.line_edit.height())
         tab1.layout.addWidget(self.line_edit, 0, 1, 1, 1)   
 
-        self.btn_push2 = QPushButton('é€‰æ‹©æ–‡ä»¶')
+        self.btn_push2 = QPushButton('Ñ¡ÔñÎÄ¼ş')
         self.btn_push2.clicked.connect(self.search_file)
         tab1.layout.addWidget(self.btn_push2, 0, 2, 1, 1)
 
-        self.btn_login = QPushButton('ç”Ÿæˆè·¯å¾„')
+        self.btn_login = QPushButton('Éú³ÉÂ·¾¶')
         self.btn_login.setEnabled(False)
         self.btn_login.clicked.connect(self.modify_path)
         tab1.layout.addWidget(self.btn_login, 0, 3, 1, 1)
 
-        # è¾“å‡ºé¢æ¿
+        # Êä³öÃæ°å
         self.text_edit.setReadOnly(True)
         tab1.layout.addWidget(self.text_edit, 1, 0, 8, 7)
 
-        self.btn_open_dir = QPushButton('ä¸€é”®ç”Ÿæˆ\n345612')
+        self.btn_open_dir = QPushButton('Ò»¼üÉú³É\n345612')
         self.btn_open_dir.clicked.connect(self.work_all)
         tab1.layout.addWidget(self.btn_open_dir, 1, 8, 1, 1)
 
-        self.btn_open_dir = QPushButton('ç”Ÿæˆ3456')
+        self.btn_open_dir = QPushButton('Éú³É3456')
         self.btn_open_dir.clicked.connect(self.work_to_3456)
         tab1.layout.addWidget(self.btn_open_dir, 2, 8, 1, 1)
 
-        self.btn_open_dir = QPushButton('4ç”Ÿæˆ12')
+        self.btn_open_dir = QPushButton('4Éú³É12')
         self.btn_open_dir.clicked.connect(self.work_to_12)
         tab1.layout.addWidget(self.btn_open_dir, 3, 8, 1, 1)
 
-        self.btn_open_dir = QPushButton('7æ·»åŠ åˆ°15')
+        self.btn_open_dir = QPushButton('7Ìí¼Óµ½15')
         self.btn_open_dir.clicked.connect(self.work_to_15)
         tab1.layout.addWidget(self.btn_open_dir, 4, 8, 1, 1)
 
-        self.btn_open_dir = QPushButton('ç»Ÿè®¡æŠ¥è¡¨')
+        self.btn_open_dir = QPushButton('Í³¼Æ±¨±í')
         # self.btn_open_dir.setEnabled(False)
         self.btn_open_dir.clicked.connect(self.work_to_gb)
         tab1.layout.addWidget(self.btn_open_dir, 5, 8, 1, 1)
 
-        self.btn_open_dir = QPushButton('æ¸…ç©ºè¾“å‡º')
+        self.btn_open_dir = QPushButton('Çå¿ÕÊä³ö')
         self.btn_open_dir.clicked.connect(self.clear_edit)
         tab1.layout.addWidget(self.btn_open_dir, 6, 8, 1, 1)
 
         tab1.setLayout(tab1.layout)
 
-        self.tab_widget.addTab(tab1, 'ä¸»çª—å£')
+        self.tab_widget.addTab(tab1, 'Ö÷´°¿Ú')
 
         layout.addWidget(self.tab_widget)
 
         main_widget.setLayout(layout)
-        self.setCentralWidget(main_widget)  # å°†ä¸» QWidget è®¾ç½®ä¸º QMainWindow çš„ä¸­å¤®çª—å£éƒ¨ä»¶
+        self.setCentralWidget(main_widget)  # ½«Ö÷ QWidget ÉèÖÃÎª QMainWindow µÄÖĞÑë´°¿Ú²¿¼ş
         # self.show()
 
         self.resize(800, 600)
 
     def search_file(self):
-        # é€‰æ‹©è¾“å…¥æ–‡ä»¶
+        # Ñ¡ÔñÊäÈëÎÄ¼ş
         file_dialog = QFileDialog()
         file_dialog.setDirectory(os.path.join(os.environ['USERPROFILE'], 'Desktop'))
-        file_path = file_dialog.getOpenFileName(self, 'é€‰æ‹©æ–‡ä»¶')
+        file_path = file_dialog.getOpenFileName(self, 'Ñ¡ÔñÎÄ¼ş')
         if file_path[0]:
             self.line_edit.setText(file_path[0])
             self.do_tag = True
@@ -120,8 +120,8 @@ class Query_Window(QMainWindow):
     def modify_path(self):
         file_dialog = QFileDialog()
         file_dialog.setDirectory(self.download_path)
-        directory_path = file_dialog.getExistingDirectory(self, 'é€‰æ‹©ç›®å½•')
-        print(f'è®¾ç½®ç”Ÿæˆè·¯å¾„ä¸º:{directory_path}')
+        directory_path = file_dialog.getExistingDirectory(self, 'Ñ¡ÔñÄ¿Â¼')
+        print(f'ÉèÖÃÉú³ÉÂ·¾¶Îª:{directory_path}')
         if directory_path:
             self.download_path = directory_path
 
@@ -135,7 +135,7 @@ class Query_Window(QMainWindow):
         try:
             text = self.line_edit.text()
             if text == '':
-                print('åœ¨æ­¤ä¹‹å‰ï¼Œè¯·å…ˆé€‰æ‹©æ–‡ä»¶')
+                print('ÔÚ´ËÖ®Ç°£¬ÇëÏÈÑ¡ÔñÎÄ¼ş')
             else:
                 self.jctz.run_smz(text, self.download_path)
                 if self.jctz.run_smz_status:
@@ -148,7 +148,7 @@ class Query_Window(QMainWindow):
         try:
             text = self.line_edit.text()
             if text == '':
-                print('åœ¨æ­¤ä¹‹å‰ï¼Œè¯·å…ˆé€‰æ‹©æ–‡ä»¶')
+                print('ÔÚ´ËÖ®Ç°£¬ÇëÏÈÑ¡ÔñÎÄ¼ş')
             else:
                 # print(f'text:{text},{len(text)}')
                 self.jctz.run_smz(text, self.download_path)
@@ -160,7 +160,7 @@ class Query_Window(QMainWindow):
         try:
             text = self.line_edit.text()
             if text == '':
-                print('åœ¨æ­¤ä¹‹å‰ï¼Œè¯·å…ˆé€‰æ‹©æ–‡ä»¶')
+                print('ÔÚ´ËÖ®Ç°£¬ÇëÏÈÑ¡ÔñÎÄ¼ş')
             else:
                 # print(f'text:{text},{len(text)}')
                 self.jctz.run_4to12(text, self.download_path)
@@ -172,7 +172,7 @@ class Query_Window(QMainWindow):
         try:
             text = self.line_edit.text()
             if text == '':
-                print('åœ¨æ­¤ä¹‹å‰ï¼Œè¯·å…ˆé€‰æ‹©æ–‡ä»¶')
+                print('ÔÚ´ËÖ®Ç°£¬ÇëÏÈÑ¡ÔñÎÄ¼ş')
             else:
                 # print(f'text:{text},{len(text)}')
                 self.jctz.run_7to15(text, self.download_path)
@@ -184,7 +184,7 @@ class Query_Window(QMainWindow):
         try:
             text = self.line_edit.text()
             if text == '':
-                print('åœ¨æ­¤ä¹‹å‰ï¼Œè¯·å…ˆé€‰æ‹©æ–‡ä»¶')
+                print('ÔÚ´ËÖ®Ç°£¬ÇëÏÈÑ¡ÔñÎÄ¼ş')
             else:
                 # print(f'text:{text},{len(text)}')
                 self.write = Write()

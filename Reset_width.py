@@ -19,6 +19,10 @@ class Reset:
         # excel格式设置
 
     def reset(self, ws, rows=None, value=False):
+        """
+        row: 跳过标题行，可以是范围
+        value: 判断单元格是否有值
+        """
         mer_lis = [mer_cell.coord.split(':')[0] for mer_cell in ws.merged_cells.ranges]
         # 修改单元格样式
         for row in ws:
@@ -39,7 +43,8 @@ class Reset:
                     cell.border = self.border_style
                     cell.alignment = self.alignment_style
                     cell.font = self.font
-
+        
+        # 修改单元格宽度适应
         lks = [] # 第一步：计算每列最大宽度，并存储在列表lks中。
         for i in range(1,ws.max_column+1): #每列循环
             lk = 1 #定义初始列宽，并在每个行循环完成后重置
