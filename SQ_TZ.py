@@ -1,6 +1,6 @@
 # -*- coding:gbk -*-
 """
-³ä·Ö¾ÍÒµÉçÇøÌ¨ÕË
+å……åˆ†å°±ä¸šç¤¾åŒºå°è´¦
 """
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Border, Side, Font
@@ -21,9 +21,9 @@ class JCTZ:
         self.border_style = Border(left=Side(style='thin'), 
                             right=Side(style='thin'), 
                             top=Side(style='thin'), 
-                            bottom=Side(style='thin'))  # ÉèÖÃµ¥Ôª¸ñµÄ±ß¿òÑùÊ½£¬È«²¿ÎªÏ¸Ïß
-        self.alignment_style = Alignment(horizontal='center', vertical='center') # ÉèÖÃµ¥Ôª¸ñµÄ¶ÔÆë·½Ê½£¬¾ÓÖĞ¶ÔÆë
-        self.font = Font(name='ËÎÌå', size=10)
+                            bottom=Side(style='thin'))  # è®¾ç½®å•å…ƒæ ¼çš„è¾¹æ¡†æ ·å¼ï¼Œå…¨éƒ¨ä¸ºç»†çº¿
+        self.alignment_style = Alignment(horizontal='center', vertical='center') # è®¾ç½®å•å…ƒæ ¼çš„å¯¹é½æ–¹å¼ï¼Œå±…ä¸­å¯¹é½
+        self.font = Font(name='å®‹ä½“', size=10)
         self.path = os.path.join(os.path.dirname(__file__), 'template_excel')
         self.out_path = os.path.join(os.path.dirname(__file__), 'template_excel_bak')
         # self.file_tag = ''
@@ -43,47 +43,47 @@ class JCTZ:
             cell.value = value
             
     def get_headers(self, ws, min_num, max_num):
-        # »ñÈ¡excel±íÍ·
+        # è·å–excelè¡¨å¤´
         if min_num != max_num:
-            # ¸´ºÏ±íÍ·µÄÇé¿ö
+            # å¤åˆè¡¨å¤´çš„æƒ…å†µ
             mer_row = [mer_cell.coord for mer_cell in ws.merged_cells.ranges if (min_num in (mer_cell.min_row, mer_cell.max_row) or max_num in (mer_cell.min_row, mer_cell.max_row))]
-            # ÄÃµ½¸´ºÏ±íÍ·ÖĞº¬ÓĞºÏ²¢µ¥Ôª¸ñµÄÇøÓò
+            # æ‹¿åˆ°å¤åˆè¡¨å¤´ä¸­å«æœ‰åˆå¹¶å•å…ƒæ ¼çš„åŒºåŸŸ
             rows_list = []
-            # ¶Ô¶àÖÖÁĞÃû(A2,AA2,ABC2)´¦Àí
+            # å¯¹å¤šç§åˆ—å(A2,AA2,ABC2)å¤„ç†
             for long in range(5, 20, 2):
                 rows = [i for i in mer_row if len(i)==int(long)]
                 if not rows:
                     break
-                # ÅÅĞò£¬±£Ö¤±íÍ·Ë³Ğò£¬·½±ãÖ±½ÓĞ´ÈëÒ»ĞĞÊı¾İ
+                # æ’åºï¼Œä¿è¯è¡¨å¤´é¡ºåºï¼Œæ–¹ä¾¿ç›´æ¥å†™å…¥ä¸€è¡Œæ•°æ®
                 rows.sort(key=lambda x: x.split(':')[0])
                 rows_list.extend(rows)
             header = []
             for i in rows_list:
                 numbers = re.findall('[0-9]+', i)
                 if numbers[0] == numbers[1]:
-                    # µ¥Ôª¸ñÍ¬ĞĞºÏ²¢
+                    # å•å…ƒæ ¼åŒè¡Œåˆå¹¶
                     start, end = re.findall('[A-Z]+', i)
-                    # ÁĞÃû´Ó×ÖÄ¸×ª»»ÎªÊı×Ö
+                    # åˆ—åä»å­—æ¯è½¬æ¢ä¸ºæ•°å­—
                     col_num1 = column_index_from_string(start[0])
                     col_num2 = column_index_from_string(end[0])
                     for n in range(col_num1, col_num2 + 1):
                         coord = get_column_letter(n) + str(int(i[1]) + 1)
                         if coord in [i[:2] for i in mer_row]:
                             continue
-                        header.append(ws[coord].value.replace('\n', '').replace(' ', '').replace('£¨±ØÌî£©', ''))
+                        header.append(ws[coord].value.replace('\n', '').replace(' ', '').replace('ï¼ˆå¿…å¡«ï¼‰', ''))
 
                 else:
                     value = ws[i.split(':')[0]].value
                     if value:
-                        header.append(value.replace('\n', '').replace(' ', '').replace('£¨±ØÌî£©', ''))
+                        header.append(value.replace('\n', '').replace(' ', '').replace('ï¼ˆå¿…å¡«ï¼‰', ''))
             h2 = [i.value for i in ws[max_num]]
             if len(header) != len(h2):
                 l = h2[len(header) - len(h2):]
                 if None not in l:
                     header.extend(l)
         else:
-            # µ¥ĞĞ±íÍ·Ö±½ÓÈ¡
-            header = [i.value.replace('\n', '').replace(' ', '').replace('£¨±ØÌî£©', '') for i in ws[max_num] if i.value]
+            # å•è¡Œè¡¨å¤´ç›´æ¥å–
+            header = [i.value.replace('\n', '').replace(' ', '').replace('ï¼ˆå¿…å¡«ï¼‰', '') for i in ws[max_num] if i.value]
         # print(header)
         return header
     
@@ -97,41 +97,41 @@ class JCTZ:
             for i in row:
                 lis_sy.append(i.value)
             syry_values.append(dict(zip(header_sy, lis_sy)))
-        keys = ['ĞòºÅ', 'ĞÕÃû', 'ĞÔ±ğ', 'ÄêÁä', 'ÎÄ»¯³Ì¶È', 'Éí·İÖ¤ºÅ', '»§¼®ĞÔÖÊ', '¼¼ÄÜÌØ³¤', '¾ÍÒµ´´ÒµÖ¤ºÅ', 'ÊÇ·ñµÇ¼ÇÊ§ÒµÈËÔ±', 'Ê§ÒµÈËÔ±ÀàĞÍ', 'Ê§ÒµÊ±¼ä', 'ÁìÈ¡Ê§Òµ±£ÏÕ½ğÆğÖ¹Ê±¼ä', 'ÇóÖ°ÒâÏò', 'ÅàÑµÒâÏò', '¾ÍÒµ·şÎñĞèÇó', 'ÁªÏµµç»°', 'ÀàĞÍ', 'µÈ¼¶']
+        keys = ['åºå·', 'å§“å', 'æ€§åˆ«', 'å¹´é¾„', 'æ–‡åŒ–ç¨‹åº¦', 'èº«ä»½è¯å·', 'æˆ·ç±æ€§è´¨', 'æŠ€èƒ½ç‰¹é•¿', 'å°±ä¸šåˆ›ä¸šè¯å·', 'æ˜¯å¦ç™»è®°å¤±ä¸šäººå‘˜', 'å¤±ä¸šäººå‘˜ç±»å‹', 'å¤±ä¸šæ—¶é—´', 'é¢†å–å¤±ä¸šä¿é™©é‡‘èµ·æ­¢æ—¶é—´', 'æ±‚èŒæ„å‘', 'åŸ¹è®­æ„å‘', 'å°±ä¸šæœåŠ¡éœ€æ±‚', 'è”ç³»ç”µè¯', 'ç±»å‹', 'ç­‰çº§']
         for i in syry_values:
             values = []
             for key in keys:
                 v = i.get(key)
-                if key == 'ĞòºÅ':
-                    v = i.get('×ÜĞòºÅ')
-                if key == 'ÄêÁä':
-                    v = datetime.now().year - int(i.get('Éí·İÖ¤ºÅ')[6:10])
-                if key == 'ÎÄ»¯³Ì¶È':
-                    v = i.get('Ñ§Àú')
-                if key == '»§¼®ĞÔÖÊ':
-                    v = '³ÇÕò'
-                if key == '¼¼ÄÜÌØ³¤':
-                    v = i.get('ÌØÊâ¼¼ÄÜ')
-                if key == 'ÊÇ·ñµÇ¼ÇÊ§ÒµÈËÔ±':
-                    v = 'ÊÇ'
-                if key == 'Ê§ÒµÈËÔ±ÀàĞÍ':
+                if key == 'åºå·':
+                    v = i.get('æ€»åºå·')
+                if key == 'å¹´é¾„':
+                    v = datetime.now().year - int(i.get('èº«ä»½è¯å·')[6:10])
+                if key == 'æ–‡åŒ–ç¨‹åº¦':
+                    v = i.get('å­¦å†')
+                if key == 'æˆ·ç±æ€§è´¨':
+                    v = 'åŸé•‡'
+                if key == 'æŠ€èƒ½ç‰¹é•¿':
+                    v = i.get('ç‰¹æ®ŠæŠ€èƒ½')
+                if key == 'æ˜¯å¦ç™»è®°å¤±ä¸šäººå‘˜':
+                    v = 'æ˜¯'
+                if key == 'å¤±ä¸šäººå‘˜ç±»å‹':
                     v = '(9)'
-                if key == 'ÁìÈ¡Ê§Òµ±£ÏÕ½ğÆğÖ¹Ê±¼ä':
-                    v = 'ÎŞ'
-                if key == 'ÇóÖ°ÒâÏò':
-                    v = '·şÎñ'
-                if key == 'ÅàÑµÒâÏò':
-                    v = 'ÎŞ'
-                if key == '¾ÍÒµ·şÎñĞèÇó':
-                    v = '£¨1£©'
-                if key == 'ÁªÏµµç»°':
-                    v = i.get('µç»°')
-                if key == 'ÀàĞÍ':
-                    v = 'ÖĞ¶ÌÆÚ'
-                if key == 'µÈ¼¶':
-                    v = 'È±·¦¼¼ÄÜ' if i.get('ÌØÊâ¼¼ÄÜ') == 'ÎŞ' else '¾ß±¸¼¼ÄÜ'
-                if key == 'Ê§ÒµÊ±¼ä':
-                    v_time = i.get('Ê§ÒµÊ±¼ä')
+                if key == 'é¢†å–å¤±ä¸šä¿é™©é‡‘èµ·æ­¢æ—¶é—´':
+                    v = 'æ— '
+                if key == 'æ±‚èŒæ„å‘':
+                    v = 'æœåŠ¡'
+                if key == 'åŸ¹è®­æ„å‘':
+                    v = 'æ— '
+                if key == 'å°±ä¸šæœåŠ¡éœ€æ±‚':
+                    v = 'ï¼ˆ1ï¼‰'
+                if key == 'è”ç³»ç”µè¯':
+                    v = i.get('ç”µè¯')
+                if key == 'ç±»å‹':
+                    v = 'ä¸­çŸ­æœŸ'
+                if key == 'ç­‰çº§':
+                    v = 'ç¼ºä¹æŠ€èƒ½' if i.get('ç‰¹æ®ŠæŠ€èƒ½') == 'æ— ' else 'å…·å¤‡æŠ€èƒ½'
+                if key == 'å¤±ä¸šæ—¶é—´':
+                    v_time = i.get('å¤±ä¸šæ—¶é—´')
                     if v_time:
                         month = datetime.now().month - v.month
                         v = v_time.replace(month=datetime.now().month - 2) if month > 2 else v_time
@@ -141,21 +141,21 @@ class JCTZ:
             self.sy_values.append(values)
 
     def read_file(self, file, min_num, max_num):
-        # ´ÓexcelÎÄ¼ş¶ÁÈ¡ÄÚÈİ£¬½«±íÍ·ºÍÄÚÈİ×é³É×Öµä±£´æÔÚself.value_lisÁĞ±íÖĞ
-        # path = os.path.join(os.path.dirname(__file__), '³ä·Ö¾ÍÒµÉçÇø»ù´¡Ì¨ÕË', file)
+        # ä»excelæ–‡ä»¶è¯»å–å†…å®¹ï¼Œå°†è¡¨å¤´å’Œå†…å®¹ç»„æˆå­—å…¸ä¿å­˜åœ¨self.value_lisåˆ—è¡¨ä¸­
+        # path = os.path.join(os.path.dirname(__file__), 'å……åˆ†å°±ä¸šç¤¾åŒºåŸºç¡€å°è´¦', file)
         path = file
         # print(f'path:{path}')
         self.value_lis = []
         try:
             wb = load_workbook(path, data_only=True)
         except InvalidFileException as E:
-            print(f'²»ÄÜ´¦Àí{path.split(".")[-1]}ÀàĞÍµÄExcelÎÄ¼ş,ÍÆ¼öÁí´æÎªxlsxÀàĞÍ')
+            print(f'ä¸èƒ½å¤„ç†{path.split(".")[-1]}ç±»å‹çš„Excelæ–‡ä»¶,æ¨èå¦å­˜ä¸ºxlsxç±»å‹')
             return 'error'
         else:
-            if "ÊµÃûÖÆ" in path.split('/')[-1] and 'Ê§ÒµÈËÔ±Çé¿ö' in wb.sheetnames:
-                self.syry(wb['Ê§ÒµÈËÔ±Çé¿ö'])
+            if "å®ååˆ¶" in path.split('/')[-1] and 'å¤±ä¸šäººå‘˜æƒ…å†µ' in wb.sheetnames:
+                self.syry(wb['å¤±ä¸šäººå‘˜æƒ…å†µ'])
             try:
-                ws = wb['ĞÂ¾ÍÒµÈËÔ±']
+                ws = wb['æ–°å°±ä¸šäººå‘˜']
             except KeyError:
                 ws = wb.worksheets[0]
             finally:
@@ -171,7 +171,7 @@ class JCTZ:
                 # pprint(self.value_lis)
 
     def write_excel(self, file, min_num, max_num):
-        # ½«self.value_lisÁĞ±íÖĞµÄÄÚÈİ¸ù¾İÏàÍ¬±íÍ·Ğ´Èëµ½excel£¬ÆäÖĞµÄÓĞĞ©ÁĞÌØÊâ´¦Àí
+        # å°†self.value_lisåˆ—è¡¨ä¸­çš„å†…å®¹æ ¹æ®ç›¸åŒè¡¨å¤´å†™å…¥åˆ°excelï¼Œå…¶ä¸­çš„æœ‰äº›åˆ—ç‰¹æ®Šå¤„ç†
         path = os.path.join(self.path, file)
         wb = load_workbook(path, data_only=True)
         ws = wb.active
@@ -181,171 +181,172 @@ class JCTZ:
         header = self.get_headers(ws, min_num, max_num)
         value_lis = []
         values_lis = self.value_lis
-        if "3¾ÍÒµÀ§ÄÑÈËÔ±¹ÜÀíÌ¨ÕË" in file:
-            values_lis = [i for i in self.value_lis if i.get('¾ÍÒµÀ§ÄÑÈËÔ±') == 'ÊÇ']
+        if "3å°±ä¸šå›°éš¾äººå‘˜ç®¡ç†å°è´¦" in file:
+            values_lis = [i for i in self.value_lis if i.get('å°±ä¸šå›°éš¾äººå‘˜') == 'æ˜¯']
         for n, i in enumerate(values_lis, start=1):
-            # ¸ù¾İkey¸Õ´Ó¹ØÁª±í»ñµÃÊı¾İ
+            # æ ¹æ®keyåˆšä»å…³è”è¡¨è·å¾—æ•°æ®
             lis = []
             for k in header:
-                # ¶ÔÌØÕ÷ÁĞµÄÌØ¶¨´¦Àí
+                # å¯¹ç‰¹å¾åˆ—çš„ç‰¹å®šå¤„ç†
                 v = i.get(k)
-                if k == 'ĞòºÅ':
+                if k == 'åºå·':
                     v = n + num
                 
-                # Ì¨ÕË12
-                # ÎÄ»¯³Ì¶È
-                if '12ÇóÖ°ÈËÔ±µÇ¼ÇÌ¨ÕÊ' in file:
-                    if k == 'ËùÑ§×¨Òµ':
-                        v = 'ÎŞ'
-                    if k == 'ÇóÖ°µØÇø':
-                        v = '±¾µØ'
-                    if k == 'ÓÃ¹¤ĞÎÊ½':
-                        v = '³¤ÆÚ'
-                    if k == 'ÆÚÍûĞ½×Ê':
-                        v = 'ÃæÒé'
-                    if k == 'ÊÇ·ñÓ¦½ì¸ßĞ£±ÏÒµÉú' or k == 'ÊÇ·ñÅ©´å×ªÒÆÀÍ¶¯Õß':
-                        v = '·ñ'
-                    if k == 'Ö°ÒµÖ¸µ¼´ÎÊı' or k == 'Ö°Òµ½éÉÜ´ÎÊı':
+                # å°è´¦12
+                # æ–‡åŒ–ç¨‹åº¦
+                if '12æ±‚èŒäººå‘˜ç™»è®°å°å¸' in file:
+                    if k == 'æ‰€å­¦ä¸“ä¸š':
+                        v = 'æ— '
+                    if k == 'æ±‚èŒåœ°åŒº':
+                        v = 'æœ¬åœ°'
+                    if k == 'ç”¨å·¥å½¢å¼':
+                        v = 'é•¿æœŸ'
+                    if k == 'æœŸæœ›è–ªèµ„':
+                        v = 'é¢è®®'
+                    if k == 'æ˜¯å¦åº”å±Šé«˜æ ¡æ¯•ä¸šç”Ÿ' or k == 'æ˜¯å¦å†œæ‘è½¬ç§»åŠ³åŠ¨è€…':
+                        v = 'å¦'
+                    if k == 'èŒä¸šæŒ‡å¯¼æ¬¡æ•°' or k == 'èŒä¸šä»‹ç»æ¬¡æ•°':
                         v = '1'
-                    if k == 'µÇ¼ÇÊ±¼ä':
-                        v = i.get('Ê§ÒµÊ±¼ä')
-                # Ì¨ÕË15
-                elif '15ÍËĞİÈËÔ±»ù±¾Çé¿ö¼°Ïà¹ØĞÅÏ¢Ì¨ÕÊ' in file:
-                    if k == '½¡¿µ×´¿ö':
-                        v = '¢Æ'
-                    if k == 'ÌØÊâÈºÌåÀà±ğ':
+                    if k == 'ç™»è®°æ—¶é—´':
+                        v = i.get('å¤±ä¸šæ—¶é—´')
+                # å°è´¦15
+                elif '15é€€ä¼‘äººå‘˜åŸºæœ¬æƒ…å†µåŠç›¸å…³ä¿¡æ¯å°å¸' in file:
+                    if k == 'å¥åº·çŠ¶å†µ':
+                        v = 'â‘µ'
+                    if k == 'ç‰¹æ®Šç¾¤ä½“ç±»åˆ«':
                         pass
-                    if k == 'Ô­¹¤×÷µ¥Î»':
-                        v = i.get('ËùÔÚµ¥Î»')
-                    if k == 'ÍËĞİÊ±¼ä':
-                        v = i.get('ÍËĞİ/ÉËÍöÊ±¼ä')
-                    if k == 'ÓëÍËĞİÈËÔ±¹ØÏµ':
-                        v = '±¾ÈË'
-                    if k == 'ÍËĞİÈËÔ±ÁªÏµµç»°':
-                        v =  i.get('ÁªÏµµç»°')
-                    if k == 'Éí·İÖ¤ºÅÂë':
-                        v = i.get('Éí·İÖ¤ºÅ')
-                # Ì¨ÕË6
-                elif '6ĞÂ¾ÍÒµÈËÔ±ĞÅÏ¢Ì¨ÕË' in file:
-                    if k == 'µØÊĞÃû³Æ£¨ÊĞ¡¢ÏØ£¨Çø£©£©':
-                        v = '¼¦Î÷ÊĞµÎµÀÇø'
-                    if k == '¾ÍÒµµ¥Î»' and not v:
-                        v = i.get('¾ÍÒµµ¥Î»(Áé»î¾ÍÒµÌî¾ßÌå¹¤×÷ÄÚÈİ£©')
-                    if k == 'µ¥Î»¾ÍÒµ':
-                        v = 'ÊÇ' if i.get('¾ÍÒµ·½Ê½') == 'µ¥Î»¾ÍÒµ' else '·ñ'
-                    if k == '¸öÌå¹¤ÉÌ»§':
-                        v = 'ÊÇ' if i.get('¾ÍÒµ·½Ê½') == '¸öÌå¹¤ÉÌ»§' else '·ñ'
-                    if k == '¹«ÒæĞÔ¸ÚÎ»':
-                        v = 'ÊÇ' if i.get('¾ÍÒµ·½Ê½') == '¹«ÒæĞÔ¸ÚÎ»°²ÖÃ' else '·ñ'
-                    if k == 'Áé»î¾ÍÒµ':
-                        v = 'ÊÇ' if i.get('¾ÍÒµ·½Ê½') == 'Áé»î¾ÍÒµ' else '·ñ'
-                    if k == 'Ê§ÒµÈËÔ±ÔÙ¾ÍÒµ':
-                        v = 'ÊÇ' if i.get('¾ÍÒµÀàĞÍ') == 'Ê§ÒµÔÙ¾ÍÒµ' else '·ñ'
-                    if k == '¾ÍÒµÀ§ÄÑÔÙ¾ÍÒµ':
-                        v = 'ÊÇ' if i.get('¾ÍÒµÀ§ÄÑÈËÔ±') == 'ÊÇ' else '·ñ'
-                # Ì¨ÕË5
-                elif '5Ê§ÒµÈËÔ±ÔÙ¾ÍÒµĞÅÏ¢Ã÷Ï¸Ì¨ÕË' in file:
-                    if k == 'ÎÄ»¯³Ì¶È' and not v:
-                        v = i.get('Ñ§Àú')
-                    if k == '»§¼®ĞÔÖÊ':
-                        v = '³ÇÕò'
-                    if k == '¼¼ÄÜÌØ³¤' and not v:
-                        v = i.get('¼¼ÄÜµÈ¼¶Ö¤Êé', 'ÎŞ')
-                    if k == 'Ê§ÒµÈËÔ±ÀàĞÍ':
+                    if k == 'åŸå·¥ä½œå•ä½':
+                        v = i.get('æ‰€åœ¨å•ä½')
+                    if k == 'é€€ä¼‘æ—¶é—´':
+                        v = i.get('é€€ä¼‘/ä¼¤äº¡æ—¶é—´')
+                    if k == 'ä¸é€€ä¼‘äººå‘˜å…³ç³»':
+                        v = 'æœ¬äºº'
+                    if k == 'é€€ä¼‘äººå‘˜è”ç³»ç”µè¯':
+                        v =  i.get('è”ç³»ç”µè¯')
+                    if k == 'èº«ä»½è¯å·ç ':
+                        v = i.get('èº«ä»½è¯å·')
+                # å°è´¦6
+                elif '6æ–°å°±ä¸šäººå‘˜ä¿¡æ¯å°è´¦' in file:
+                    if k == 'åœ°å¸‚åç§°ï¼ˆå¸‚ã€å¿ï¼ˆåŒºï¼‰ï¼‰':
+                        v = 'é¸¡è¥¿å¸‚æ»´é“åŒº'
+                    if k == 'å°±ä¸šå•ä½' and not v:
+                        v = i.get('å°±ä¸šå•ä½(çµæ´»å°±ä¸šå¡«å…·ä½“å·¥ä½œå†…å®¹ï¼‰')
+                    if k == 'å•ä½å°±ä¸š':
+                        v = 'æ˜¯' if i.get('å°±ä¸šæ–¹å¼') == 'å•ä½å°±ä¸š' else 'å¦'
+                    if k == 'ä¸ªä½“å·¥å•†æˆ·':
+                        v = 'æ˜¯' if i.get('å°±ä¸šæ–¹å¼') == 'ä¸ªä½“å·¥å•†æˆ·' else 'å¦'
+                    if k == 'å…¬ç›Šæ€§å²—ä½':
+                        v = 'æ˜¯' if i.get('å°±ä¸šæ–¹å¼') == 'å…¬ç›Šæ€§å²—ä½å®‰ç½®' else 'å¦'
+                    if k == 'çµæ´»å°±ä¸š':
+                        v = 'æ˜¯' if i.get('å°±ä¸šæ–¹å¼') == 'çµæ´»å°±ä¸š' else 'å¦'
+                    if k == 'å¤±ä¸šäººå‘˜å†å°±ä¸š':
+                        # v = 'æ˜¯' if i.get('å°±ä¸šç±»å‹') == 'å¤±ä¸šå†å°±ä¸š' else 'å¦'
+                        v = 'æ˜¯'
+                    if k == 'å°±ä¸šå›°éš¾å†å°±ä¸š':
+                        v = 'æ˜¯' if i.get('å°±ä¸šå›°éš¾äººå‘˜') == 'æ˜¯' else 'å¦'
+                # å°è´¦5
+                elif '5å¤±ä¸šäººå‘˜å†å°±ä¸šä¿¡æ¯æ˜ç»†å°è´¦' in file:
+                    if k == 'æ–‡åŒ–ç¨‹åº¦' and not v:
+                        v = i.get('å­¦å†')
+                    if k == 'æˆ·ç±æ€§è´¨':
+                        v = 'åŸé•‡'
+                    if k == 'æŠ€èƒ½ç‰¹é•¿' and not v:
+                        v = i.get('æŠ€èƒ½ç­‰çº§è¯ä¹¦', 'æ— ')
+                    if k == 'å¤±ä¸šäººå‘˜ç±»å‹':
                         v = '(9)'
-                    if k == 'Ê§ÒµÊ±¼ä':
-                        d = i.get('µÇ¼Ç¾ÍÒµÊ±¼ä£¨Äê/ÔÂ/ÈÕ£©')
+                    if k == 'å¤±ä¸šæ—¶é—´':
+                        d = i.get('ç™»è®°å°±ä¸šæ—¶é—´ï¼ˆå¹´/æœˆ/æ—¥ï¼‰')
                         if not d:
-                            d = i.get('¾ÍÒµÊ±¼ä')
+                            d = i.get('å°±ä¸šæ—¶é—´')
                         if d:
                             v = d.replace(month=d.month-1)
-                    if k == 'ÔÙ¾ÍÒµÊ±¼ä' and not v:
-                        v = i.get('µÇ¼Ç¾ÍÒµÊ±¼ä£¨Äê/ÔÂ/ÈÕ£©')
-                    if k == '¾ÍÒµÇşµÀ':
-                        jyqd = {"Áé»î¾ÍÒµ": "(5)", "µ¥Î»¾ÍÒµ": "(3)", "¸öÌå¹¤ÉÌ»§": "(4)", "¹«ÒæĞÔ¸ÚÎ»": "(6)"}
-                        v = jyqd.get(i.get('¾ÍÒµ·½Ê½'))
-                    if k == 'ÏÖ¾ÍÒµµ¥Î»':
-                        v = i.get("¾ÍÒµµ¥Î»(Áé»î¾ÍÒµÌî¾ßÌå¹¤×÷ÄÚÈİ£©", "").split("/")[0]
-                    if k == '¾ÍÒµ¸ÚÎ»':
-                        if i.get('¾ÍÒµ·½Ê½') == 'Áé»î¾ÍÒµ':
-                            v = i.get('¾ÍÒµµ¥Î»(Áé»î¾ÍÒµÌî¾ßÌå¹¤×÷ÄÚÈİ£©', '').split('/')[-1]
+                    if k == 'å†å°±ä¸šæ—¶é—´' and not v:
+                        v = i.get('ç™»è®°å°±ä¸šæ—¶é—´ï¼ˆå¹´/æœˆ/æ—¥ï¼‰')
+                    if k == 'å°±ä¸šæ¸ é“':
+                        jyqd = {"çµæ´»å°±ä¸š": "(5)", "å•ä½å°±ä¸š": "(3)", "ä¸ªä½“å·¥å•†æˆ·": "(4)", "å…¬ç›Šæ€§å²—ä½": "(6)"}
+                        v = jyqd.get(i.get('å°±ä¸šæ–¹å¼'))
+                    if k == 'ç°å°±ä¸šå•ä½':
+                        v = i.get("å°±ä¸šå•ä½(çµæ´»å°±ä¸šå¡«å…·ä½“å·¥ä½œå†…å®¹ï¼‰", "").split("/")[0]
+                    if k == 'å°±ä¸šå²—ä½':
+                        if i.get('å°±ä¸šæ–¹å¼') == 'çµæ´»å°±ä¸š':
+                            v = i.get('å°±ä¸šå•ä½(çµæ´»å°±ä¸šå¡«å…·ä½“å·¥ä½œå†…å®¹ï¼‰', '').split('/')[-1]
                         else:
-                            v = 'Ô±¹¤'
-                    if k == 'ËùÊô²úÒµ':
-                        v = i.get('´ÓÊÂ²úÒµÀàĞÍ')
-                # Ì¨ÕË4
-                elif '4Ê§ÒµÈËÔ±¹ÜÀíÌ¨ÕË' in file:
-                    if k == 'ĞòºÅ':
+                            v = 'å‘˜å·¥'
+                    if k == 'æ‰€å±äº§ä¸š':
+                        v = i.get('ä»äº‹äº§ä¸šç±»å‹')
+                # å°è´¦4
+                elif '4å¤±ä¸šäººå‘˜ç®¡ç†å°è´¦' in file:
+                    if k == 'åºå·':
                         v += len(self.sy_values)
-                    if k == 'ÄêÁä':
-                        v = i.get('ÄêÁä').split('-')[0]
-                    if k == 'ÊÇ·ñµÇ¼ÇÊ§ÒµÈËÔ±':
-                        v = '·ñ'
-                    if k == '¼¼ÄÜÌØ³¤':
-                        self.jnct = v = i.get('¼¼ÄÜµÈ¼¶Ö¤Êé')
-                    if k == 'Ê§ÒµÊ±¼ä':
-                        d = i.get('µÇ¼Ç¾ÍÒµÊ±¼ä£¨Äê/ÔÂ/ÈÕ£©')
+                    if k == 'å¹´é¾„':
+                        v = i.get('å¹´é¾„').split('-')[0]
+                    if k == 'æ˜¯å¦ç™»è®°å¤±ä¸šäººå‘˜':
+                        v = 'å¦'
+                    if k == 'æŠ€èƒ½ç‰¹é•¿':
+                        self.jnct = v = i.get('æŠ€èƒ½ç­‰çº§è¯ä¹¦')
+                    if k == 'å¤±ä¸šæ—¶é—´':
+                        d = i.get('ç™»è®°å°±ä¸šæ—¶é—´ï¼ˆå¹´/æœˆ/æ—¥ï¼‰')
                         if d:
                             v = d.replace(month=d.month-1)
-                    if k == 'ÎÄ»¯³Ì¶È' and not v:
-                        v = i.get('Ñ§Àú')
-                    if k == 'Ê§ÒµÈËÔ±ÀàĞÍ':
+                    if k == 'æ–‡åŒ–ç¨‹åº¦' and not v:
+                        v = i.get('å­¦å†')
+                    if k == 'å¤±ä¸šäººå‘˜ç±»å‹':
                         v = '(9)'
-                    if k == '»§¼®ĞÔÖÊ':
-                        v = '³ÇÕò'
-                    if k == 'ÁìÈ¡Ê§Òµ±£ÏÕ½ğÆğÖ¹Ê±¼ä':
-                        v = 'ÎŞ'
-                    if k == 'ÇóÖ°ÒâÏò':
-                        if i.get('¾ÍÒµ·½Ê½') == 'Áé»î¾ÍÒµ':
-                            v = i.get('¾ÍÒµµ¥Î»(Áé»î¾ÍÒµÌî¾ßÌå¹¤×÷ÄÚÈİ£©', '').split('/')[-1]
+                    if k == 'æˆ·ç±æ€§è´¨':
+                        v = 'åŸé•‡'
+                    if k == 'é¢†å–å¤±ä¸šä¿é™©é‡‘èµ·æ­¢æ—¶é—´':
+                        v = 'æ— '
+                    if k == 'æ±‚èŒæ„å‘':
+                        if i.get('å°±ä¸šæ–¹å¼') == 'çµæ´»å°±ä¸š':
+                            v = i.get('å°±ä¸šå•ä½(çµæ´»å°±ä¸šå¡«å…·ä½“å·¥ä½œå†…å®¹ï¼‰', '').split('/')[-1]
                         else:
-                            v = 'Ô±¹¤'
-                    if k == 'ÅàÑµÒâÏò':
-                        v = 'ÎŞ'
-                    if k == '¾ÍÒµ·şÎñĞèÇó':
-                        v = '£¨1£©'
-                    if k == 'ÀàĞÍ':
-                        v = 'ÖĞ¶ÌÆÚ'
-                    if k == 'µÈ¼¶':
-                        if '¼¶' in self.jnct:
-                            v = '¾ß±¸¼¼ÄÜ'
+                            v = 'å‘˜å·¥'
+                    if k == 'åŸ¹è®­æ„å‘':
+                        v = 'æ— '
+                    if k == 'å°±ä¸šæœåŠ¡éœ€æ±‚':
+                        v = 'ï¼ˆ1ï¼‰'
+                    if k == 'ç±»å‹':
+                        v = 'ä¸­çŸ­æœŸ'
+                    if k == 'ç­‰çº§':
+                        if 'çº§' in self.jnct:
+                            v = 'å…·å¤‡æŠ€èƒ½'
                         else:
-                            v = 'È±·¦¼¼ÄÜ'
-                elif "3¾ÍÒµÀ§ÄÑÈËÔ±¹ÜÀíÌ¨ÕË" in file:
-                    if k == "ÎÄ»¯³Ì¶È":
-                        v = i.get('Ñ§Àú')
-                    if k == "¼¼ÄÜÌØ³¤":
-                        v = i.get('¼¼ÄÜµÈ¼¶Ö¤Êé')
-                    if k == "¾ÍÒµÀ§ÄÑÈËÔ±ÀàĞÍ":
-                        v = '¢Ù'
-                    if k == "¼ÒÍ¥×¡Ö·":
-                        v = '¼¦Î÷ÊĞµÎµÀÇø'
-                    if k == "ÔÙ¾ÍÒµÊ±¼ä":
-                        v = i.get('µÇ¼Ç¾ÍÒµÊ±¼ä£¨Äê/ÔÂ/ÈÕ£©')
-                    if k == 'ÏÖ¾ÍÒµµ¥Î»':
-                        v = i.get("¾ÍÒµµ¥Î»(Áé»î¾ÍÒµÌî¾ßÌå¹¤×÷ÄÚÈİ£©", "").split("/")[0]
-                    if k == '¾ÍÒµ¸ÚÎ»':
-                        if i.get('¾ÍÒµ·½Ê½') == 'Áé»î¾ÍÒµ':
-                            v = i.get('¾ÍÒµµ¥Î»(Áé»î¾ÍÒµÌî¾ßÌå¹¤×÷ÄÚÈİ£©', '').split('/')[-1]
+                            v = 'ç¼ºä¹æŠ€èƒ½'
+                elif "3å°±ä¸šå›°éš¾äººå‘˜ç®¡ç†å°è´¦" in file:
+                    if k == "æ–‡åŒ–ç¨‹åº¦":
+                        v = i.get('å­¦å†')
+                    if k == "æŠ€èƒ½ç‰¹é•¿":
+                        v = i.get('æŠ€èƒ½ç­‰çº§è¯ä¹¦')
+                    if k == "å°±ä¸šå›°éš¾äººå‘˜ç±»å‹":
+                        v = 'â‘ '
+                    if k == "å®¶åº­ä½å€":
+                        v = 'é¸¡è¥¿å¸‚æ»´é“åŒº'
+                    if k == "å†å°±ä¸šæ—¶é—´":
+                        v = i.get('ç™»è®°å°±ä¸šæ—¶é—´ï¼ˆå¹´/æœˆ/æ—¥ï¼‰')
+                    if k == 'ç°å°±ä¸šå•ä½':
+                        v = i.get("å°±ä¸šå•ä½(çµæ´»å°±ä¸šå¡«å…·ä½“å·¥ä½œå†…å®¹ï¼‰", "").split("/")[0]
+                    if k == 'å°±ä¸šå²—ä½':
+                        if i.get('å°±ä¸šæ–¹å¼') == 'çµæ´»å°±ä¸š':
+                            v = i.get('å°±ä¸šå•ä½(çµæ´»å°±ä¸šå¡«å…·ä½“å·¥ä½œå†…å®¹ï¼‰', '').split('/')[-1]
                         else:
-                            v = 'Ô±¹¤'
-                    if k == '¾ÍÒµÈ¥Ïò':
-                        jyqx = {"Áé»î¾ÍÒµ": "¢İ", "µ¥Î»¾ÍÒµ": "¢Û", "¸öÌå¹¤ÉÌ»§": "¢Ü", "¹«ÒæĞÔ¸ÚÎ»": "¢Ş"}
-                        v = jyqx.get(i.get('¾ÍÒµ·½Ê½'))
-                    if k == 'ÊÇ·ñÇ©¶¨ÀÍ¶¯ºÏÍ¬':
-                        v = '·ñ'
-                    if k == 'ºÏÍ¬ÆÚÏŞ':
-                        v = 'ÎŞ'
-                    if k == 'ÊÇ·ñ¾ÍÒµÔ®Öú¶ÔÏó':
-                        v = ' ÊÇ'
-                    if k == '¾ÍÒµÔ®ÖúĞÎÊ½':
-                        v = '¢İ'
+                            v = 'å‘˜å·¥'
+                    if k == 'å°±ä¸šå»å‘':
+                        jyqx = {"çµæ´»å°±ä¸š": "â‘¤", "å•ä½å°±ä¸š": "â‘¢", "ä¸ªä½“å·¥å•†æˆ·": "â‘£", "å…¬ç›Šæ€§å²—ä½": "â‘¥"}
+                        v = jyqx.get(i.get('å°±ä¸šæ–¹å¼'))
+                    if k == 'æ˜¯å¦ç­¾å®šåŠ³åŠ¨åˆåŒ':
+                        v = 'å¦'
+                    if k == 'åˆåŒæœŸé™':
+                        v = 'æ— '
+                    if k == 'æ˜¯å¦å°±ä¸šæ´åŠ©å¯¹è±¡':
+                        v = ' æ˜¯'
+                    if k == 'å°±ä¸šæ´åŠ©å½¢å¼':
+                        v = 'â‘¤'
                 lis.append(v)
             value_lis.append(lis)
-        if "4Ê§ÒµÈËÔ±¹ÜÀíÌ¨ÕË" in file:
+        if "4å¤±ä¸šäººå‘˜ç®¡ç†å°è´¦" in file:
             value_lis = self.sy_values + value_lis
         # pprint(value_lis)
-        # ¼ÆËã²åÈëĞĞºÅ
+        # è®¡ç®—æ’å…¥è¡Œå·
         insert_num = num + max_num
         if mer_lis:
             self.write_before(ws, mer_lis)
@@ -354,72 +355,72 @@ class JCTZ:
         if mer_lis:
             self.write_tail(ws, mer_lis, len(value_lis))
         out_path = os.path.join(self.out_path, file)
-        reset_rows = [4] if "12ÇóÖ°ÈËÔ±µÇ¼ÇÌ¨ÕÊ" in file else [4, 5]
+        reset_rows = [4] if "12æ±‚èŒäººå‘˜ç™»è®°å°å¸" in file else [4, 5]
         self.Rest.reset(ws, rows=reset_rows, value=True)
         wb.save(out_path)
-        print(f'ÎÄ¼ş{out_path}£¬Ğ´ÈëÍê³É')
+        print(f'æ–‡ä»¶{out_path}ï¼Œå†™å…¥å®Œæˆ')
 
     def write_before(self, ws, mer_lis):
         for i in mer_lis:
             # num1, num2 = re.findall('[0-9]+', i)
-            # È¡Ïûµ¥Ôª¸ñºÏ²¢
+            # å–æ¶ˆå•å…ƒæ ¼åˆå¹¶
             ws.unmerge_cells(i)
         
     def write_tail(self, ws, mer_lis, rows):
         for i in mer_lis:
             num1, num2 = re.findall('[0-9]+', i)
-            # µ¥Ôª¸ñºÏ²¢
+            # å•å…ƒæ ¼åˆå¹¶
             start, end = re.findall('[A-Z]+', i)
             ws.merge_cells(f'{start}{int(num1) + rows}:{end}{int(num2) + rows}')
 
     def run_smz(self, smz_path, out_path):
-        # ¸ù¾İÊµÃûÖÆĞÅÏ¢£¬µ¼³öÌ¨ÕË5¡¢6
+        # æ ¹æ®å®ååˆ¶ä¿¡æ¯ï¼Œå¯¼å‡ºå°è´¦5ã€6
         res = self.read_file(smz_path, 2, 3)
         if res and res == 'error':
             return
         if out_path:
             self.out_path = out_path
-        self.write_excel('3¾ÍÒµÀ§ÄÑÈËÔ±¹ÜÀíÌ¨ÕË.xlsx', 4, 5)
-        self.write_excel('4Ê§ÒµÈËÔ±¹ÜÀíÌ¨ÕË.xlsx', 4, 5)
-        self.write_excel('5Ê§ÒµÈËÔ±ÔÙ¾ÍÒµĞÅÏ¢Ã÷Ï¸Ì¨ÕË.xlsx', 4, 5)
-        self.write_excel('6ĞÂ¾ÍÒµÈËÔ±ĞÅÏ¢Ì¨ÕË.xlsx', 4, 5)
+        self.write_excel('3å°±ä¸šå›°éš¾äººå‘˜ç®¡ç†å°è´¦.xlsx', 4, 5)
+        self.write_excel('4å¤±ä¸šäººå‘˜ç®¡ç†å°è´¦.xlsx', 4, 5)
+        self.write_excel('5å¤±ä¸šäººå‘˜å†å°±ä¸šä¿¡æ¯æ˜ç»†å°è´¦.xlsx', 4, 5)
+        self.write_excel('6æ–°å°±ä¸šäººå‘˜ä¿¡æ¯å°è´¦.xlsx', 4, 5)
         self.run_smz_status = True
 
     def run_4to12(self, tz4_path, out_path):
-        # ¸ù¾İÌ¨ÕË4£¬µ¼³öÌ¨ÕË12
+        # æ ¹æ®å°è´¦4ï¼Œå¯¼å‡ºå°è´¦12
         if os.path.isfile(tz4_path):
             res = self.read_file(tz4_path, 4, 5)
         else:
-            res = self.read_file(os.path.join(tz4_path, '4Ê§ÒµÈËÔ±¹ÜÀíÌ¨ÕË.xlsx'), 4, 5)
+            res = self.read_file(os.path.join(tz4_path, '4å¤±ä¸šäººå‘˜ç®¡ç†å°è´¦.xlsx'), 4, 5)
         if res and res == 'error':
             return
         if out_path:
             self.out_path = out_path
-        self.write_excel('12ÇóÖ°ÈËÔ±µÇ¼ÇÌ¨ÕÊ.xlsx', 4, 4)
+        self.write_excel('12æ±‚èŒäººå‘˜ç™»è®°å°å¸.xlsx', 4, 4)
     
     def run_7to15(self, tz7_path, out_path):
-        # ½«Ì¨ÕË7µ¼ÈëÌ¨ÕË15
+        # å°†å°è´¦7å¯¼å…¥å°è´¦15
         res = self.read_file(tz7_path, 4, 4)
         if res and res == 'error':
             return
         if out_path:
             self.out_path = out_path
-        self.write_excel('15ÍËĞİÈËÔ±»ù±¾Çé¿ö¼°Ïà¹ØĞÅÏ¢Ì¨ÕÊ.xlsx', 4, 5)
+        self.write_excel('15é€€ä¼‘äººå‘˜åŸºæœ¬æƒ…å†µåŠç›¸å…³ä¿¡æ¯å°å¸.xlsx', 4, 5)
 
     def main(self):
-        # ¸ù¾İÊµÃûÖÆĞÅÏ¢£¬µ¼³öÌ¨ÕË3¡¢4¡¢5¡¢6
+        # æ ¹æ®å®ååˆ¶ä¿¡æ¯ï¼Œå¯¼å‡ºå°è´¦3ã€4ã€5ã€6
         self.run_smz()
 
         if self.run_smz_status:
-            # ¸ù¾İÌ¨ÕË4£¬µ¼³öÌ¨ÕË12
+            # æ ¹æ®å°è´¦4ï¼Œå¯¼å‡ºå°è´¦12
             self.run_4to12()
 
-        # ½«Ì¨ÕË7µ¼ÈëÌ¨ÕË15
+        # å°†å°è´¦7å¯¼å…¥å°è´¦15
         # self.run_7to15()
 
 
 if __name__ == '__main__':
     jctz = JCTZ()
-    # jctz.run_smz(smz_path='C:/Users/Administrator/Desktop/Á¢¾®2024Äê4ÔÂÊµÃûÖÆÌ¨ÕË20240426°æ.xlsx', out_path='')
-    # jctz.run_smz(smz_path='C:/Users/XBD/Desktop/ÊµÃûÖÆ.xlsx', out_path='C:/Users/XBD/Desktop/Ì¨ÕË½á¹û')
-    # jctz.run_4to12(tz4_path='C:/Users/XBD/Desktop/Ì¨ÕË½á¹û/4Ê§ÒµÈËÔ±¹ÜÀíÌ¨ÕË.xlsx', out_path='C:/Users/XBD/Desktop/Ì¨ÕË½á¹û')
+    # jctz.run_smz(smz_path='C:/Users/Administrator/Desktop/ç«‹äº•2024å¹´4æœˆå®ååˆ¶å°è´¦20240426ç‰ˆ.xlsx', out_path='')
+    # jctz.run_smz(smz_path='C:/Users/XBD/Desktop/å®ååˆ¶.xlsx', out_path='C:/Users/XBD/Desktop/å°è´¦ç»“æœ')
+    # jctz.run_4to12(tz4_path='C:/Users/XBD/Desktop/å°è´¦ç»“æœ/4å¤±ä¸šäººå‘˜ç®¡ç†å°è´¦.xlsx', out_path='C:/Users/XBD/Desktop/å°è´¦ç»“æœ')
