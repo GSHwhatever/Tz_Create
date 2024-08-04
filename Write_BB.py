@@ -58,7 +58,7 @@ class Write:
         nv_num = len([i for i in all_ws['X'] if i.value and i.value == '女'])       # 女性人数
         cylb_dic = Counter([i.value for i in all_ws['P'] if i.value and i.value in ('第一产业', '第二产业', '第三产业')])     # 产业类别计数
         jyqd_dic = Counter([i.value for i in all_ws['J'] if i.value and i.value in ('单位就业', '灵活就业', '个体工商户', '公益性岗位安置')])     # 就业渠道计数
-        xydm_lis = [i.value for i in all_ws['L'] if i.value and i.value.isalnum()]      # 单位就业人员单位统一就业代码
+        xydm_lis = [i.value for i, j in zip(all_ws['L'], all_ws['J']) if j == '单位就业' and i.value and i.value.isalnum()]      # 单位就业人员单位统一就业代码
         sydw_num = len([i for i in xydm_lis if i[0] == '1'])      # 根据统一信用代码筛选第一位为'1'的为机关事业单位
         nlhf_dic = Counter([i.value for i in all_ws['AF'] if i.value and i.value in ('16-24', '25-45', '46-60')])     # 年龄划分计数
 
