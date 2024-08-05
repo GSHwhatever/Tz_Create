@@ -69,7 +69,7 @@ class Query_Window(QMainWindow):
 
         # 输出面板
         self.text_edit.setReadOnly(True)
-        self.text_edit.setStyleSheet("background-image: url(./background.png); background-attachment: fixed; background-repeat: no-repeat; background-position: center;")
+        self.text_edit.setStyleSheet("background-image: url(./_internal/template_excel/background.png); background-attachment: fixed; background-repeat: no-repeat; background-position: center;")
         tab1.layout.addWidget(self.text_edit, 1, 0, 8, 7)
 
         self.btn_open_dir = QPushButton('一键生成\n345612')

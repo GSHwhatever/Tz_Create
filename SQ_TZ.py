@@ -397,6 +397,7 @@ class JCTZ:
         self.write_excel('5失业人员再就业信息明细台账.xlsx', 4, 5)
         self.write_excel('6新就业人员信息台账.xlsx', 4, 5)
         self.run_smz_status = True
+        print('注意！！！\n请根据台账3就业困难人员管理台账，修改台账6的《就业困难》列\n根据台账11职业培训台帐，修改台账4的《培训意向》列')
 
     def run_4to12(self, tz4_path, out_path):
         # 根据台账4，导出台账12
