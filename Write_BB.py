@@ -64,7 +64,7 @@ class Write:
 
         syry_num = len([i for i in syry_ws['A'] if i.value]) - 2        # 失业人员人数
         synx_num = len([i for i in syry_ws['C'] if i.value and i.value == '女'])        # 失业人员其中女性人数
-        sykn_num = len([i for i in syry_ws['M'] if i.value and i.value == '是'])        # 失业人员其中就业困难人数
+        sykn_num = len([i for i in syry_ws['K'] if i.value and i.value == '就业困难'])        # 失业人员其中就业困难人数
 
         hyhf_dic = Counter([i.value for i in all_ws['N'] if i.value and i.value in self.industries])
         
