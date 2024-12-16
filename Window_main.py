@@ -1,11 +1,12 @@
 # -*- coding:gbk -*-
+from Out_put import OutputRedirector
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.Qt import *
 from PyQt5.QtCore import Qt
 from SQ_TZ import JCTZ
 from Write_BB import Write
-import sys, os, traceback
+import sys, os, traceback, threading
 
 
 class Query_Window(QMainWindow):
@@ -71,6 +72,11 @@ class Query_Window(QMainWindow):
         self.text_edit.setReadOnly(True)
         self.text_edit.setStyleSheet("background-image: url(./_internal/template_excel/background.png); background-attachment: fixed; background-repeat: no-repeat; background-position: center;")
         tab1.layout.addWidget(self.text_edit, 1, 0, 8, 7)
+
+        redirector = OutputRedirector(self.text_edit)
+        redirector_thread = threading.Thread(target=redirector.initUI)
+        redirector_thread.start()
+        sys.stdout = redirector
 
         self.btn_open_dir = QPushButton('一键生成\n345612')
         self.btn_open_dir.clicked.connect(self.work_all)
